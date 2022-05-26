@@ -344,7 +344,7 @@ else:
     currentFileIndex = len(storageFiles)
     currentPageIndex = (num_lines // 11) + 1
     currentPageRecordIndex = num_lines - (currentPageIndex-1)*11
-    currentEmptyRecordNumber = int(linecache.getline(lastFileName, (currentPageIndex-1)*11))
+    currentEmptyRecordNumber = int(linecache.getline(lastFileName, (currentPageIndex-1)*11+1))
 
 print(currentFileIndex)
 print(currentPageIndex)
@@ -481,8 +481,12 @@ def createRecord(params):
         isSuccess = False
         return
     tree = bPlusTrees.get(typeName)
-    #TODO:  Find fonksiyonuna value olarak page-id slot ikilisi verilecek
-    itemFound = tree.find(typeName, primaryKey)
+    global currentFileIndex
+    global currentPageIndex
+    global currentPageRecordIndex
+    global currentEmptyRecordNumber
+    #TODO:  Find fonksiyonuna value olarak page-id slot ikilisi verilecek -- DONE
+    itemFound = tree.find(currentPageIndex,currentPageRecordIndex)
     if itemFound:
         isSuccess = False
         return
@@ -492,10 +496,6 @@ def createRecord(params):
     #TODO: Dosyaya yazış tarzı değişecek
     createdFiles.add(bTreeFileName)
     bTreeFile.write("\nkey - " + primaryKey)
-    global currentFileIndex
-    global currentPageIndex
-    global currentPageRecordIndex
-    global currentEmptyRecordNumber
     currentStorageFileName = 'storage_file_'+ str(currentFileIndex) + '.txt' 
 
     with open(currentStorageFileName,"a") as currentStorageFile:
@@ -533,7 +533,6 @@ def createRecord(params):
 
     #TODO: Write to a record/page file -- DONE
     #TODO: Kaç boş olduğunu gösteren sayıyı azaltacağız -- DONE
-    #TODO: Delete bitini değiştireceğiz
     
 
 def deleteType(params):
@@ -564,6 +563,7 @@ def deleteRecord(params):
         isSuccess = False
         return
     tree.delete(typeName, primaryKey)
+    #TODO: Delete bitini değiştireceğiz
     #TODO: Tree dosyasından da sileceğiz
     #TODO: Page header'da silme bitini işaretleyeceğiz
     #TODO: Kaç boş olduğunu gösteren sayıyı artıracağız

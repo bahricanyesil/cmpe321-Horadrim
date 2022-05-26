@@ -583,3 +583,68 @@ occurrence,operation,status
 1653579144,search record potion 6,success
 1653579144,filter record evil name>Baal,success
 1653579144,list type,success
+1653579507,create record evil Diablo PrimeEvil LordOfTerror redLightningHose,failure
+1653579507,create type angel 3 1 name str alias str affiliation str,failure
+1653579507,delete record angel Itherael,failure
+1653579507,create type potion 3 1 id int type str size str,failure
+1653579507,create record potion 4 healing greater,success
+1653579507,create record potion 11 stamina standard,success
+1653579507,create record potion 6 mana minor,success
+1653579507,create record evil Belial LesserEvil LordOfLies flySwarms,failure
+1653579507,filter record potion id>5,success
+1653579507,search record angel Tyrael,failure
+1653579507,search record potion 6,success
+1653579507,filter record evil name>Baal,success
+1653579507,list type,success
+1653579715,create record evil Diablo PrimeEvil LordOfTerror redLightningHose,failure
+1653579715,create type angel 3 1 name str alias str affiliation str,failure
+1653579715,delete record angel Itherael,failure
+1653579715,create type potion 3 1 id int type str size str,failure
+1653579715,create record potion 4 healing greater,success
+1653579715,create record potion 11 stamina standard,success
+1653579715,create record potion 6 mana minor,success
+1653579715,create record evil Belial LesserEvil LordOfLies flySwarms,failure
+1653579715,filter record potion id>5,success
+1653579715,search record angel Tyrael,failure
+1653579715,search record potion 6,success
+1653579715,filter record evil name>Baal,success
+1653579715,list type,success
+1653579723,create record evil Diablo PrimeEvil LordOfTerror redLightningHose,failure
+1653579723,create type angel 3 1 name str alias str affiliation str,failure
+1653579723,delete record angel Itherael,failure
+1653579723,create type potion 3 1 id int type str size str,failure
+1653579723,create record potion 4 healing greater,success
+1653579723,create record potion 11 stamina standard,success
+1653579723,create record potion 6 mana minor,success
+1653579723,create record evil Belial LesserEvil LordOfLies flySwarms,failure
+1653579723,filter record potion id>5,success
+1653579723,search record angel Tyrael,failure
+1653579723,search record potion 6,success
+1653579723,filter record evil name>Baal,success
+1653579723,list type,success
+1653579734,create record evil Diablo PrimeEvil LordOfTerror redLightningHose,failure
+1653579734,create type angel 3 1 name str alias str affiliation str,failure
+1653579734,delete record angel Itherael,failure
+1653579734,create type potion 3 1 id int type str size str,failure
+1653579734,create record potion 4 healing greater,success
+1653579734,create record potion 11 stamina standard,success
+1653579734,create record potion 6 mana minor,success
+1653579734,create record evil Belial LesserEvil LordOfLies flySwarms,failure
+1653579734,filter record potion id>5,success
+1653579734,search record angel Tyrael,failure
+1653579734,search record potion 6,success
+1653579734,filter record evil name>Baal,success
+1653579734,list type,success
+1653579740,create record evil Diablo PrimeEvil LordOfTerror redLightningHose,failure
+1653579740,create type angel 3 1 name str alias str affiliation str,failure
+1653579740,delete record angel Itherael,failure
+1653579740,create type potion 3 1 id int type str size str,failure
+1653579740,create record potion 4 healing greater,success
+1653579740,create record potion 11 stamina standard,success
+1653579740,create record potion 6 mana minor,success
+1653579740,create record evil Belial LesserEvil LordOfLies flySwarms,failure
+1653579740,filter record potion id>5,success
+1653579740,search record angel Tyrael,failure
+1653579740,search record potion 6,success
+1653579740,filter record evil name>Baal,success
+1653579740,list type,success
