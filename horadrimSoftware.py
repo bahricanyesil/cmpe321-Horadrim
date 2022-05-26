@@ -2,6 +2,7 @@ import csv
 import math
 import os
 import time
+import linecache
 
 bPlusTrees = {}
 record_len = 6
@@ -320,7 +321,7 @@ storageFiles = []
 currentFileIndex = 0
 currentPageIndex = 0
 currentPageRecordIndex = 0
-
+currentEmptyRecordNumber = 0
 #TODO:
 prefix = 'storage_file_'
 for i in os.listdir('./'):
@@ -335,6 +336,7 @@ if not storageFiles:
     currentFileIndex = 1
     currentPageIndex = 1
     currentPageRecordIndex = 1
+    currentEmptyRecordNumber = 10
 
 else:
     lastFileName = prefix + str(len(storageFiles)) + '.txt'
@@ -342,6 +344,7 @@ else:
     currentFileIndex = len(storageFiles)
     currentPageIndex = (num_lines // 11) + 1
     currentPageRecordIndex = num_lines - (currentPageIndex-1)*11
+    currentEmptyRecordNumber = int(linecache.getline(lastFileName, (currentPageIndex-1)*11))
 
 print(currentFileIndex)
 print(currentPageIndex)
@@ -492,14 +495,26 @@ def createRecord(params):
     global currentFileIndex
     global currentPageIndex
     global currentPageRecordIndex
+    global currentEmptyRecordNumber
     currentStorageFileName = 'storage_file_'+ str(currentFileIndex) + '.txt' 
+
     with open(currentStorageFileName,"a") as currentStorageFile:
         currentStorageFile.write("\n")
         currentStorageFile.write("0 ")
         for i in range(len(fieldValues)):
             currentStorageFile.write(fieldValues[i] + " ")
+
+    tempFile = open(currentStorageFileName, "r")
+    allLines = tempFile.readlines()
+    allLines[(currentPageIndex-1)*11] = str(currentEmptyRecordNumber-1)+"\n"
+    out = open(currentStorageFileName, "w")
+    out.writelines(allLines)
+    out.close()
+
+
     if(currentPageRecordIndex==10):
         currentPageRecordIndex=1
+        currentEmptyRecordNumber=10
         if(currentPageIndex==10):
             currentPageIndex=1
             newFileName = prefix + str(len(storageFiles)+1) + '.txt'
@@ -513,10 +528,11 @@ def createRecord(params):
             with open(currentStorageFileName,"a") as currentStorageFile:
                 currentStorageFile.write("\n10")
     else:
+        currentEmptyRecordNumber=currentEmptyRecordNumber-1
         currentPageRecordIndex=currentPageRecordIndex+1
 
     #TODO: Write to a record/page file -- DONE
-    #TODO: Kaç boş olduğunu gösteren sayıyı azaltacağız
+    #TODO: Kaç boş olduğunu gösteren sayıyı azaltacağız -- DONE
     #TODO: Delete bitini değiştireceğiz
     
 
