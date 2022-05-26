@@ -317,6 +317,9 @@ for i in os.listdir('./'):
         bPlusTrees[typeName] = tree
 
 storageFiles = []
+currentFileIndex = 0
+currentPageIndex = 0
+currentPageRecordIndex = 0
 
 #TODO:
 prefix = 'storage_file_'
@@ -324,16 +327,35 @@ for i in os.listdir('./'):
     if os.path.isfile(os.path.join('./',i)) and prefix in i:
         storageFiles.append(i)
 
-if storageFiles:
-    print(os.stat(storageFiles[len(storageFiles)-1]).st_size)
-    #TODO: Son eleman dolu değilse oradan devam, dolu ise yeni file
-else:
-    newFileName = prefix + str(len(storageFiles) + 1) + '.txt'
+if not storageFiles:
+    newFileName = prefix + str(len(storageFiles)+1) + '.txt'
     with open(newFileName, 'wb') as f:
         storageFiles.append(newFileName)
-        num_chars = 1024
-        #TODO: eğer full boş değilse dolu olmayan kısımların boyutu öğrenilip o kadar doldurulacak, devamına geçilmeyecek
-        f.write(b'asdsa' * num_chars)
+        f.write(b'10')
+    currentFileIndex = 1
+    currentPageIndex = 1
+    currentPageRecordIndex = 1
+
+else:
+    lastFileName = prefix + str(len(storageFiles)) + '.txt'
+    num_lines = sum(1 for line in open(lastFileName))
+    currentFileIndex = len(storageFiles)
+    currentPageIndex = (num_lines // 11) + 1
+    currentPageRecordIndex = num_lines - (currentPageIndex-1)*11
+
+print(currentFileIndex)
+print(currentPageIndex)
+print(currentPageRecordIndex)
+#if storageFiles:
+#    print(os.stat(storageFiles[len(storageFiles)-1]).st_size)
+#    #TODO: Son eleman dolu değilse oradan devam, dolu ise yeni file
+#else:
+#    newFileName = prefix + str(len(storageFiles) + 1) + '.txt'
+#    with open(newFileName, 'wb') as f:
+#        storageFiles.append(newFileName)
+#        num_chars = 1024
+#        #TODO: eğer full boş değilse dolu olmayan kısımların boyutu öğrenilip o kadar doldurulacak, devamına geçilmeyecek
+#        f.write(b'asdsa' * num_chars)
 
 inputFile = open("input.txt", "r")
 outputFileName = "output.txt"
@@ -467,7 +489,33 @@ def createRecord(params):
     #TODO: Dosyaya yazış tarzı değişecek
     createdFiles.add(bTreeFileName)
     bTreeFile.write("\nkey - " + primaryKey)
-    #TODO: Write to a record/page file
+    global currentFileIndex
+    global currentPageIndex
+    global currentPageRecordIndex
+    currentStorageFileName = 'storage_file_'+ str(currentFileIndex) + '.txt' 
+    with open(currentStorageFileName,"a") as currentStorageFile:
+        currentStorageFile.write("\n")
+        currentStorageFile.write("0 ")
+        for i in range(len(fieldValues)):
+            currentStorageFile.write(fieldValues[i] + " ")
+    if(currentPageRecordIndex==10):
+        currentPageRecordIndex=1
+        if(currentPageIndex==10):
+            currentPageIndex=1
+            newFileName = prefix + str(len(storageFiles)+1) + '.txt'
+            with open(newFileName, 'wb') as f:
+                storageFiles.append(newFileName)
+                f.write(b'10')
+            currentFileIndex = len(storageFiles)
+        else:
+            currentPageIndex=currentPageIndex+1
+            currentStorageFileName = 'storage_file_'+ str(currentFileIndex) + '.txt'
+            with open(currentStorageFileName,"a") as currentStorageFile:
+                currentStorageFile.write("\n10")
+    else:
+        currentPageRecordIndex=currentPageRecordIndex+1
+
+    #TODO: Write to a record/page file -- DONE
     #TODO: Kaç boş olduğunu gösteren sayıyı azaltacağız
     #TODO: Delete bitini değiştireceğiz
     
@@ -487,6 +535,7 @@ def deleteType(params):
     bTreeFileName = findBTreeFileName(typeName)
     os.remove(bTreeFileName)
     #TODO: Remove all records with this type.
+
 
 
 def deleteRecord(params):
