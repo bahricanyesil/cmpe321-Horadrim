@@ -1,8 +1,8 @@
 import csv
+import linecache
 import math
 import os
 import time
-import linecache
 
 bPlusTrees = {}
 record_len = 6
@@ -339,26 +339,13 @@ if not storageFiles:
     currentEmptyRecordNumber = 10
 
 else:
+    #TODO: Storage file'dakileri bplustree'ye ekle
     lastFileName = prefix + str(len(storageFiles)) + '.txt'
     num_lines = sum(1 for line in open(lastFileName))
     currentFileIndex = len(storageFiles)
     currentPageIndex = (num_lines // 11) + 1
     currentPageRecordIndex = num_lines - (currentPageIndex-1)*11
     currentEmptyRecordNumber = int(linecache.getline(lastFileName, (currentPageIndex-1)*11+1))
-
-print(currentFileIndex)
-print(currentPageIndex)
-print(currentPageRecordIndex)
-#if storageFiles:
-#    print(os.stat(storageFiles[len(storageFiles)-1]).st_size)
-#    #TODO: Son eleman dolu değilse oradan devam, dolu ise yeni file
-#else:
-#    newFileName = prefix + str(len(storageFiles) + 1) + '.txt'
-#    with open(newFileName, 'wb') as f:
-#        storageFiles.append(newFileName)
-#        num_chars = 1024
-#        #TODO: eğer full boş değilse dolu olmayan kısımların boyutu öğrenilip o kadar doldurulacak, devamına geçilmeyecek
-#        f.write(b'asdsa' * num_chars)
 
 inputFile = open("input.txt", "r")
 outputFileName = "output.txt"
@@ -485,17 +472,19 @@ def createRecord(params):
     global currentPageIndex
     global currentPageRecordIndex
     global currentEmptyRecordNumber
-    #TODO:  Find fonksiyonuna value olarak page-id slot ikilisi verilecek -- DONE
-    itemFound = tree.find(currentPageIndex,currentPageRecordIndex)
+    #TODO:  Find fonksiyonuna value olarak page-id slot ikilisi verilecek
+    itemFound = tree.find(currentPageIndex, currentPageRecordIndex)
     if itemFound:
         isSuccess = False
         return
+    #TODO: Bplustree'ye value olarak primary key, key oalrak pageId+slot
     tree.insert(typeName, primaryKey)
     bTreeFileName = findBTreeFileName(typeName)
     bTreeFile = open(bTreeFileName, "a")
     #TODO: Dosyaya yazış tarzı değişecek
+    #TODO: Record headerda typeName tutacağız
     createdFiles.add(bTreeFileName)
-    bTreeFile.write("\nkey - " + primaryKey)
+    bTreeFile.write("\n${} " + primaryKey)
     currentStorageFileName = 'storage_file_'+ str(currentFileIndex) + '.txt' 
 
     with open(currentStorageFileName,"a") as currentStorageFile:

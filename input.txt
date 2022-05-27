@@ -6,6 +6,138 @@ create record potion 4 healing greater
 create record potion 11 stamina standard
 create record potion 6 mana minor
 create record evil Belial LesserEvil LordOfLies flySwarms
+create record potion 4 healing greater
+create record potion 11 stamina standard
+create record potion 6 mana minor
+create record evil Belial LesserEvil LordOfLies flySwarms
+create record potion 4 healing greater
+create record potion 11 stamina standard
+create record potion 6 mana minor
+create record evil Belial LesserEvil LordOfLies flySwarms
+create record potion 4 healing greater
+create record potion 11 stamina standard
+create record potion 6 mana minor
+create record evil Belial LesserEvil LordOfLies flySwarms
+create record potion 4 healing greater
+create record potion 11 stamina standard
+create record potion 6 mana minor
+create record evil Belial LesserEvil LordOfLies flySwarms
+create record potion 4 healing greater
+create record potion 11 stamina standard
+create record potion 6 mana minor
+create record evil Belial LesserEvil LordOfLies flySwarms
+create record potion 4 healing greater
+create record potion 11 stamina standard
+create record potion 6 mana minor
+create record evil Belial LesserEvil LordOfLies flySwarms
+create record potion 4 healing greater
+create record potion 11 stamina standard
+create record potion 6 mana minor
+create record evil Belial LesserEvil LordOfLies flySwarms
+create record potion 4 healing greater
+create record potion 11 stamina standard
+create record potion 6 mana minor
+create record evil Belial LesserEvil LordOfLies flySwarms
+create record potion 4 healing greater
+create record potion 11 stamina standard
+create record potion 6 mana minor
+create record evil Belial LesserEvil LordOfLies flySwarms
+create record potion 4 healing greater
+create record potion 11 stamina standard
+create record potion 6 mana minor
+create record evil Belial LesserEvil LordOfLies flySwarms
+create record potion 4 healing greater
+create record potion 11 stamina standard
+create record potion 6 mana minor
+create record evil Belial LesserEvil LordOfLies flySwarms
+create record potion 4 healing greater
+create record potion 11 stamina standard
+create record potion 6 mana minor
+create record evil Belial LesserEvil LordOfLies flySwarms
+create record potion 4 healing greater
+create record potion 11 stamina standard
+create record potion 6 mana minor
+create record evil Belial LesserEvil LordOfLies flySwarms
+create record potion 4 healing greater
+create record potion 11 stamina standard
+create record potion 6 mana minor
+create record evil Belial LesserEvil LordOfLies flySwarms
+create record potion 4 healing greater
+create record potion 11 stamina standard
+create record potion 6 mana minor
+create record evil Belial LesserEvil LordOfLies flySwarms
+create record potion 4 healing greater
+create record potion 11 stamina standard
+create record potion 6 mana minor
+create record evil Belial LesserEvil LordOfLies flySwarms
+create record potion 4 healing greater
+create record potion 11 stamina standard
+create record potion 6 mana minor
+create record evil Belial LesserEvil LordOfLies flySwarms
+create record potion 4 healing greater
+create record potion 11 stamina standard
+create record potion 6 mana minor
+create record evil Belial LesserEvil LordOfLies flySwarms
+create record potion 4 healing greater
+create record potion 11 stamina standard
+create record potion 6 mana minor
+create record evil Belial LesserEvil LordOfLies flySwarms
+create record potion 4 healing greater
+create record potion 11 stamina standard
+create record potion 6 mana minor
+create record evil Belial LesserEvil LordOfLies flySwarms
+create record potion 4 healing greater
+create record potion 11 stamina standard
+create record potion 6 mana minor
+create record evil Belial LesserEvil LordOfLies flySwarms
+create record potion 4 healing greater
+create record potion 11 stamina standard
+create record potion 6 mana minor
+create record evil Belial LesserEvil LordOfLies flySwarms
+create record potion 4 healing greater
+create record potion 11 stamina standard
+create record potion 6 mana minor
+create record evil Belial LesserEvil LordOfLies flySwarms
+create record potion 4 healing greater
+create record potion 11 stamina standard
+create record potion 6 mana minor
+create record evil Belial LesserEvil LordOfLies flySwarms
+create record potion 4 healing greater
+create record potion 11 stamina standard
+create record potion 6 mana minor
+create record evil Belial LesserEvil LordOfLies flySwarms
+create record potion 4 healing greater
+create record potion 11 stamina standard
+create record potion 6 mana minor
+create record evil Belial LesserEvil LordOfLies flySwarms
+create record potion 4 healing greater
+create record potion 11 stamina standard
+create record potion 6 mana minor
+create record evil Belial LesserEvil LordOfLies flySwarms
+create record potion 4 healing greater
+create record potion 11 stamina standard
+create record potion 6 mana minor
+create record evil Belial LesserEvil LordOfLies flySwarms
+create record potion 4 healing greater
+create record potion 11 stamina standard
+create record potion 6 mana minor
+create record evil Belial LesserEvil LordOfLies flySwarms
+create record potion 4 healing greater
+create record potion 11 stamina standard
+create record potion 6 mana minor
+create record evil Belial LesserEvil LordOfLies flySwarms
+create record potion 4 healing greater
+create record potion 11 stamina standard
+create record potion 6 mana minor
+create record evil Belial LesserEvil LordOfLies flySwarms
+create record potion 4 healing greater
+create record potion 11 stamina standard
+create record potion 6 mana minor
+create record evil Belial LesserEvil LordOfLies flySwarms
+create record potion 4 healing greater
+create record potion 11 stamina standard
+create record potion 6 mana minor
+create record evil Belial LesserEvil LordOfLies flySwarms
 filter record potion id>5
 search record angel Tyrael
 search record potion 6
