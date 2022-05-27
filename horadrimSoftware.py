@@ -1,10 +1,25 @@
 import csv
 import math
 import os
+import sys
 import time
+
+sys.setrecursionlimit(10000)
 
 bPlusTrees = {}
 record_len = 6
+
+isSuccess = True
+args = sys.argv[1:]
+if len(args) < 2:
+    print('Please provide an input and output file name')
+    quit(1)
+outputFileName = args[1]
+outputFileW = open(outputFileName, "w")
+
+### NOTE-IMPORTANT: We have used the code written in the following link while implementing our system:
+# https://www.programiz.com/dsa/b-plus-tree
+# We have modified some parts of this code according to out needs.
 
 # Node creation
 class Node:
@@ -22,20 +37,19 @@ class Node:
             temp1 = self.values
             for i in range(len(temp1)):
                 if (value == temp1[i]):
-                    self.keys[i].append(key)
+                    self.keys.append(key)
                     break
                 elif (value < temp1[i]):
                     self.values = self.values[:i] + [value] + self.values[i:]
-                    self.keys = self.keys[:i] + [[key]] + self.keys[i:]
+                    self.keys = self.keys[:i] + [key] + self.keys[i:]
                     break
                 elif (i + 1 == len(temp1)):
                     self.values.append(value)
-                    self.keys.append([key])
+                    self.keys.append(key)
                     break
         else:
             self.values = [value]
-            self.keys = [[key]]
-
+            self.keys = [key]
 
 # B plus tree
 class BPlusTree:
@@ -45,7 +59,7 @@ class BPlusTree:
 
     # Insert operation
     def insert(self, value, key):
-        value = str(value)
+        value = value
         old_node = self.search(value)
         old_node.insert_at_leaf(old_node, value, key)
 
@@ -77,7 +91,7 @@ class BPlusTree:
                 elif (i + 1 == len(current_node.values)):
                     current_node = current_node.keys[i + 1]
                     break
-        return current_node
+        return current_node        
 
     # Find the node
     def find(self, value, key):
@@ -135,24 +149,35 @@ class BPlusTree:
         for i, item in enumerate(node_.values):
             if item == value:
                 temp = 1
-
-                if key in node_.keys[i]:
-                    if len(node_.keys[i]) > 1:
-                        node_.keys[i].pop(node_.keys[i].index(key))
-                    elif node_ == self.root:
+                if key in node_.keys:
+                    if node_ == self.root:
                         node_.values.pop(i)
                         node_.keys.pop(i)
                     else:
-                        node_.keys[i].pop(node_.keys[i].index(key))
                         del node_.keys[i]
                         node_.values.pop(node_.values.index(value))
                         self.deleteEntry(node_, value, key)
                 else:
                     print("Value not in Key")
-                    return
+                    return False
         if temp == 0:
             print("Value not in Tree")
-            return
+            return False
+        return True
+
+    def findAllValues(self):
+        allValues = set()
+        waitingNodes = set()
+        waitingNodes.add(self.root)
+        while waitingNodes:
+            current_node = waitingNodes.pop()
+            if(current_node.check_leaf):
+                for value in current_node.values:
+                    allValues.add(value)
+            else:
+                for node in current_node.keys:
+                    waitingNodes.add(node)
+        return allValues
 
     # Delete an entry
     def deleteEntry(self, node_, value, key):
@@ -173,9 +198,10 @@ class BPlusTree:
             del node_
             return
         elif (len(node_.keys) < int(math.ceil(node_.order / 2)) and node_.check_leaf == False) or (len(node_.values) < int(math.ceil((node_.order - 1) / 2)) and node_.check_leaf == True):
-
             is_predecessor = 0
             parentNode = node_.parent
+            if parentNode is None:
+                return
             PrevNode = -1
             NextNode = -1
             PrevK = -1
@@ -293,85 +319,16 @@ def printTree(tree):
         lev = level.pop(0)
         if (x.check_leaf == False):
             for i, item in enumerate(x.keys):
-                print(item.values)
+                print(str(item) + '-' + str(x.values[i]))
         else:
             for i, item in enumerate(x.keys):
-                print(item.values)
+                print(str(item) + '-' + str(x.values[i]))
             if (flag == 0):
                 lev_leaf = lev
                 leaf = x
                 flag = 1
 
-prefix = 'B+TreeFile_'
-for i in os.listdir('./'):
-    if os.path.isfile(os.path.join('./',i)) and prefix in i:
-        tree = BPlusTree(record_len)
-        bTreeFile = open(i, 'r')
-        typeName = bTreeFile.readline().strip()
-        while True:
-            line = bTreeFile.readline()
-            lineWords = line.strip().split()
-            if not line or len(lineWords) < 2:
-                break
-            tree.insert(lineWords[0], lineWords[1])
-        bPlusTrees[typeName] = tree
-
-storageFiles = []
-
-#TODO:
-prefix = 'storage_file_'
-for i in os.listdir('./'):
-    if os.path.isfile(os.path.join('./',i)) and prefix in i:
-        storageFiles.append(i)
-
-if storageFiles:
-    print(os.stat(storageFiles[len(storageFiles)-1]).st_size)
-    #TODO: Son eleman dolu değilse oradan devam, dolu ise yeni file
-else:
-    newFileName = prefix + str(len(storageFiles) + 1) + '.txt'
-    with open(newFileName, 'wb') as f:
-        storageFiles.append(newFileName)
-        num_chars = 1024
-        #TODO: eğer full boş değilse dolu olmayan kısımların boyutu öğrenilip o kadar doldurulacak, devamına geçilmeyecek
-        f.write(b'asdsa' * num_chars)
-
-inputFile = open("input.txt", "r")
-outputFileName = "output.txt"
-outputFile = open(outputFileName, "w")
-fLog = open('horadrimLog.csv', "a")
-logFile = csv.writer(fLog)
-systemCatalogFileName = "attribute_catalog.txt"
-indexCatalogFileName = "index_catalog.txt"
-systemCatalogFileWrite = open(systemCatalogFileName, "a")
-systemCatalogFileRead = open(systemCatalogFileName, "r")
-indexCatalogFileWrite = open(indexCatalogFileName, "a")
-indexCatalogFileRead = open(indexCatalogFileName, "r")
-
-createdFiles = set()
-
-logFileTitles = ["occurrence", "operation", "status"]
-logFileEntries = []
-
-attributeCatalogTitles = ["attr_name", "rel_name", "type", "position", "is_primary"]
-attributeCatalogSubRows = [
-  ["attr_name", "Attribute_Cat", "string", "1", "True"], 
-  ["rel_name", "Attribute_Cat", "string", "2", "False"], 
-  ["type", "Attribute_Cat", "string", "3", "False"], 
-  ["position", "Attribute_Cat", "integer", "4", "False"]
-]
-attributeCatalogValues = []
-newAttributeCatalogValues = []
-
-indexCatalogTitles = ["index_name", "table_name", "column_name", "type_desc"]
-indexCatalogSubRows = [
-  ["Attribute_Cat_attr_name", "Attribute_Cat", "attr_name", "Non-clustered"],
-]
-indexCatalogValues = []
-newIndexCatalogValues = []
-
 def fileNotExists(fileName):
-    print(fileName)
-    print(createdFiles)
     if fileName in createdFiles:
         return False
     return os.stat(fileName).st_size == 0
@@ -397,16 +354,140 @@ def checkInteger(fieldType, fieldName):
             return False
     return True
 
+inputFile = open(args[0], "r")
+fLog = open('horadrimLog.csv', "a")
+logFile = csv.writer(fLog)
+systemCatalogFileName = "attribute_catalog.txt"
+indexCatalogFileName = "index_catalog.txt"
+systemCatalogFileWrite = open(systemCatalogFileName, "a")
+systemCatalogFileRead = open(systemCatalogFileName, "r")
+indexCatalogFileWrite = open(indexCatalogFileName, "a")
+indexCatalogFileRead = open(indexCatalogFileName, "r")
+
+createdFiles = set()
+
+logFileEntries = []
+
+attributeCatalogTitles = ["attr_name", "rel_name", "type", "position", "is_primary"]
+attributeCatalogSubRows = [
+  ["attr_name", "Attribute_Cat", "string", "1", "True"], 
+  ["rel_name", "Attribute_Cat", "string", "2", "False"], 
+  ["type", "Attribute_Cat", "string", "3", "False"], 
+  ["position", "Attribute_Cat", "integer", "4", "False"]
+]
+attributeCatalogValues = []
+newAttributeCatalogValues = []
+
+indexCatalogTitles = ["index_name", "table_name", "column_name", "type_desc"]
+indexCatalogSubRows = [
+  ["Attribute_Cat_attr_name", "Attribute_Cat", "attr_name", "Non-clustered"],
+]
+indexCatalogValues = []
+newIndexCatalogValues = []
+
+
+if fileNotExists(systemCatalogFileName):
+    cateRelString = "# Attr_Cat("
+    cateRelString += ', '.join(attributeCatalogTitles)
+    cateRelString += ")\n"
+    createdFiles.add(systemCatalogFileName)
+    systemCatalogFileWrite.write(cateRelString)
+    systemCatalogFileWrite.write(tableAlignedText(attributeCatalogTitles))
+    systemCatalogFileWrite.write("------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n")
+    for row in attributeCatalogSubRows:
+        systemCatalogFileWrite.write(tableAlignedText(row))
+
+    cateIndString = "# Index_Cat("
+    cateIndString += ', '.join(indexCatalogTitles)
+    cateIndString += ")\n"
+    createdFiles.add(indexCatalogFileName)
+    indexCatalogFileWrite.write(cateIndString)
+    indexCatalogFileWrite.write(tableAlignedText(indexCatalogTitles, 4))
+    indexCatalogFileWrite.write("------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n")
+    for row in indexCatalogSubRows:
+        indexCatalogFileWrite.write(tableAlignedText(row, 4))
+
+readRowNum = 0
+while True:
+    readRowNum += 1
+    line = systemCatalogFileRead.readline().strip()
+    if not line:
+      break
+    if readRowNum < 7:
+      continue
+    attributeCatalogValues.append(line.strip())
+
+readRowNum = 0
+while True:
+    readRowNum += 1
+    line = indexCatalogFileRead.readline().strip()
+    if not line:
+      break
+    if readRowNum < 3:
+      continue
+    indexCatalogValues.append(line.strip())
+
+prefix = 'B+TreeFile_'
+for i in os.listdir('./'):
+    if os.path.isfile(os.path.join('./',i)) and prefix in i:
+        tree = BPlusTree(record_len)
+        bTreeFile = open(i, 'r')
+        typeName = bTreeFile.readline().strip()
+        while True:
+            line = bTreeFile.readline()
+            lineWords = line.strip().split()
+            if not line or len(lineWords) < 2:
+                break
+            primaryKey = lineWords[0]
+            for el in attributeCatalogValues:
+                elements = el.split()
+                if elements[4] == "True" and elements[2] == "int" and elements[1] == typeName:
+                    primaryKey = int(primaryKey)
+            tree.insert(primaryKey, lineWords[1])
+        bPlusTrees[typeName] = tree
+        bTreeFile.close()
+
+storageFiles = []
+currentFileIndex = 0
+currentPageIndex = 0
+currentPageRecordIndex = 0
+prefix = 'storage_file_'
+lastFileIndex = 0
+for i in os.listdir('./'):
+    if os.path.isfile(os.path.join('./',i)) and prefix in i:
+        storageFiles.append(i)
+        val = int(i[i.rfind('_')+1:i.find('.txt')])
+        if val > lastFileIndex:
+            lastFileIndex = val
+
+if not storageFiles:
+    currentFileIndex = 1
+    currentPageIndex = 1
+    currentPageRecordIndex = 1
+
+else:
+    lastFileName = prefix + str(lastFileIndex) + '.txt'
+    num_lines = sum(1 for line in open(lastFileName))
+    currentFileIndex = lastFileIndex
+    currentPageIndex = (num_lines // 11) + 1
+    currentPageRecordIndex = num_lines - (currentPageIndex-1)*11
+
 def createType(params):
+    global isSuccess
+    if len(params) < 3:
+        isSuccess = False
+        return
     typeName = params[0]
     for el in attributeCatalogValues:
         elements = el.split()
         if elements[1] == typeName:
-            global isSuccess
             isSuccess = False
             return
     numOfFields = int(params[1])
     primaryKeyOrder = int(params[2])
+    if len(params) < 3 + (numOfFields*2):
+        isSuccess = False
+        return
     fields = params[3:]
     fieldNames = []
     fieldTypes = []
@@ -424,7 +505,11 @@ def createType(params):
     bTreeFile = open(bTreeFileName, "w")
     createdFiles.add(bTreeFileName)
     bTreeFile.write(typeName)
+    bTreeFile.close()
     tree = BPlusTree(record_len)
+    if not tree:
+        isSuccess = False
+        return
     bPlusTrees[typeName] = tree
     for tableAlignedValueRow in tableAlignedValueRowList:
         if tableAlignedValueRow.strip() not in attributeCatalogValues:
@@ -437,6 +522,10 @@ def createType(params):
         newIndexCatalogValues.append(tableAlignedIndexRow)
 
 def createRecord(params):
+    global isSuccess
+    if len(params) < 1:
+        isSuccess = False
+        return
     typeName = params[0]
     fieldValues = params[1:]
     foundType = False
@@ -445,34 +534,148 @@ def createRecord(params):
         elements = el.split()
         if elements[1] == typeName:
             elTypeIndex = int(elements[3])-1
-            if elements[4] == 'True':
-                primaryKey = fieldValues[elTypeIndex]
-            shouldContinue = checkInteger(elements[2], fieldValues[int(elements[3])-1])
+            if(elTypeIndex > len(params)-2):
+                isSuccess = False
+                return
+            shouldContinue = checkInteger(elements[2], fieldValues[elTypeIndex])
             if not shouldContinue:
                 return
+            if elements[4] == 'True':
+                primaryKey = fieldValues[elTypeIndex]
+                if elements[2] == "int":
+                    primaryKey = int(primaryKey)
             foundType = True
-    global isSuccess
     if not foundType:
         isSuccess = False
         return
     tree = bPlusTrees.get(typeName)
-    #TODO:  Find fonksiyonuna value olarak page-id slot ikilisi verilecek
-    itemFound = tree.find(typeName, primaryKey)
-    if itemFound:
+    if not tree:
         isSuccess = False
         return
-    tree.insert(typeName, primaryKey)
+    global currentFileIndex
+    global currentPageIndex
+    global currentPageRecordIndex
+    tempPageIndex = (currentFileIndex-1)*10+currentPageIndex
+    pageIdSlot = str(tempPageIndex) + '-' + str(currentPageRecordIndex)
+    itemFound = tree.search(primaryKey).values
+    if primaryKey in itemFound:
+        isSuccess = False
+        return
+    tree.insert(primaryKey, pageIdSlot)
     bTreeFileName = findBTreeFileName(typeName)
     bTreeFile = open(bTreeFileName, "a")
-    #TODO: Dosyaya yazış tarzı değişecek
     createdFiles.add(bTreeFileName)
-    bTreeFile.write("\nkey - " + primaryKey)
-    #TODO: Write to a record/page file
-    #TODO: Kaç boş olduğunu gösteren sayıyı azaltacağız
-    #TODO: Delete bitini değiştireceğiz
-    
+    bTreeFile.write("\n" + str(primaryKey) + " " + pageIdSlot)
+    bTreeFile.close()
+    currentStorageFileName = 'storage_file_'+ str(currentFileIndex) + '.txt'
+
+    global lastFileIndex
+    with open(currentStorageFileName,"a") as currentStorageFile:
+        if currentStorageFileName not in storageFiles:
+            storageFiles.append(currentStorageFileName)
+            lastFileIndex += 1
+            currentStorageFile.write('10')
+        currentStorageFile.write("\n0 " + typeName + " ")
+        for i in range(len(fieldValues)):
+            currentStorageFile.write(fieldValues[i])
+            if(i != len(fieldValues)-1):
+                currentStorageFile.write(' ')
+    tempFile = open(currentStorageFileName, "r")
+    allLines = tempFile.readlines()
+    emptySlots = int(allLines[((currentPageIndex-1)*11)])
+    allLines[(currentPageIndex-1)*11] = str(emptySlots-1) + "\n"
+    out = open(currentStorageFileName, "w")
+    out.writelines(allLines)
+    out.close()
+
+    if(currentPageRecordIndex==10):
+        currentPageRecordIndex=1
+        if(currentPageIndex==10):
+            currentPageIndex=1
+            newFileName = prefix + str(lastFileIndex+1) + '.txt'
+            with open(newFileName, 'wb') as f:
+                storageFiles.append(newFileName)
+                lastFileIndex += 1
+                f.write(b'10')
+            currentFileIndex = lastFileIndex
+        else:
+            currentPageIndex=currentPageIndex+1
+            currentStorageFileName = 'storage_file_'+ str(currentFileIndex) + '.txt'
+            with open(currentStorageFileName,"a") as currentStorageFile:
+                currentStorageFile.write("\n10")
+    else:
+        currentPageRecordIndex=currentPageRecordIndex+1    
+    bPlusTrees[typeName] = tree
+
+def deleteRecordHelper(primaryKey, record, typeName):
+    tree = bPlusTrees.get(typeName)
+    dashIndex = record.find('-')
+    pageNo = int(record[0:dashIndex])
+    recordNo = int(record[dashIndex+1:])
+    fileNo = 0
+    if(pageNo%10==0):
+        fileNo = pageNo // 10
+        pageNo = 10
+    else:
+        fileNo = (pageNo // 10) + 1
+        pageNo = pageNo % 10
+
+    foundFileName = "storage_file_"+str(fileNo)+".txt"
+    tempFile = open(foundFileName, "r")
+    allLines = tempFile.readlines()
+    emptyRecordsNum = int(allLines[((pageNo-1)*11)])
+    isDeleted = tree.delete(primaryKey, record)
+    global isSuccess
+    if not isDeleted:
+        isSuccess = False
+        return
+    changeLine = allLines[((pageNo-1)*11)+recordNo].strip()
+    allLines[((pageNo-1)*11)] = str(emptyRecordsNum+1) + "\n"
+    allLines[((pageNo-1)*11)+recordNo] = "1 " + changeLine[2:]
+    if(len(allLines) != ((pageNo-1)*11)+recordNo + 1):
+        allLines[((pageNo-1)*11)+recordNo] = allLines[((pageNo-1)*11)+recordNo] + '\n'
+    out = open(foundFileName, "w")
+    out.writelines(allLines)
+    out.close()
+    hasNonEmpty = False
+    for lineIndex in range(len(allLines)):
+        if lineIndex % 11 == 0 and int(allLines[lineIndex].strip()) != 10:
+            hasZeroRecord = False
+            for i in range(lineIndex+1, lineIndex + 11):
+                if i > len(allLines) -1:
+                    break
+                if allLines[i].strip().split()[0].strip() == '0':
+                    hasZeroRecord = True
+                print(allLines[i].strip().split()[0].strip())
+            hasNonEmpty = hasZeroRecord
+            break
+    if not hasNonEmpty:
+        os.remove(foundFileName)
+        storageFiles.remove(foundFileName)
+    bTreeFileName = findBTreeFileName(typeName)
+    bTreeFile = open(bTreeFileName, "r+")
+    createdFiles.add(bTreeFileName)
+    allText = ''
+    while True:
+        line = bTreeFile.readline().strip()
+        if not line:
+            break
+        else:
+            words = line.split()
+            if not(str(words[0]) == str(primaryKey)):
+                if not(allText == ''):
+                    allText += '\n'
+                allText += line
+    bTreeFile.close()
+    bTreeFileW = open(bTreeFileName, "w")
+    bTreeFileW.write(allText)
+    bPlusTrees[typeName] = tree
 
 def deleteType(params):
+    global isSuccess
+    if len(params) < 1:
+        isSuccess = False
+        return
     typeName = params[0]
     foundType = False
     for el in attributeCatalogValues:
@@ -480,76 +683,362 @@ def deleteType(params):
         if elements[1] == typeName:
             foundType = True
     if not foundType:
-        global isSuccess
         isSuccess = False
         return
+    tree = bPlusTrees.get(typeName)
+    if not tree:
+        isSuccess = False
+        return
+    allFoundValues = tree.findAllValues()
+    for value in allFoundValues:
+        itemFound = tree.search(value)
+        if value not in itemFound.values:
+            isSuccess = False
+            return
+        index = -1
+        try:
+            index = itemFound.values.index(value)
+        except:
+            isSuccess = False
+            return
+        record = itemFound.keys[index]
+        deleteRecordHelper(value, record, typeName)
+        
     bPlusTrees.pop(typeName)
     bTreeFileName = findBTreeFileName(typeName)
     os.remove(bTreeFileName)
-    #TODO: Remove all records with this type.
+    tempFile = open(systemCatalogFileName, "r")
+    allLines = tempFile.readlines()
+    newLines = ''
+    index = 0
+    for line in allLines:
+        index += 1
+        if index < 4:
+            newLines += line
+            continue
+        words = line.strip().split()
+        if words[1] != typeName:
+            newLines += line
+    changedFile = open(systemCatalogFileName, "w")
+    changedFile.write(newLines)
+
+    tempFile = open(indexCatalogFileName, "r")
+    allLines = tempFile.readlines()
+    newLines = ''
+    index = 0
+    for line in allLines:
+        index += 1
+        if index < 4:
+            newLines += line
+            continue
+        words = line.strip().split()
+        if words[1] != typeName:
+            newLines += line
+    changedFile = open(indexCatalogFileName, "w")
+    changedFile.write(newLines)
 
 
 def deleteRecord(params):
-    typeName = params[0]
-    primaryKey = params[1]
-    tree = bPlusTrees.get(typeName)
-    itemFound = tree.find(typeName, primaryKey)
-    if not itemFound:
-        global isSuccess
+    global isSuccess
+    if len(params) < 2:
         isSuccess = False
         return
-    tree.delete(typeName, primaryKey)
-    #TODO: Tree dosyasından da sileceğiz
-    #TODO: Page header'da silme bitini işaretleyeceğiz
-    #TODO: Kaç boş olduğunu gösteren sayıyı artıracağız
-
+    typeName = params[0]
+    primaryKey = params[1]
+    foundType = False
+    for el in attributeCatalogValues:
+        elements = el.split()
+        if elements[1] == typeName:
+            if elements[4] == 'True' and elements[2] == "int":
+                primaryKey = int(primaryKey)
+            foundType = True
+    if not foundType:
+        isSuccess = False
+        return
+    tree = bPlusTrees.get(typeName)
+    if not tree:
+        isSuccess = False
+        return
+    itemFound = tree.search(primaryKey)
+    if primaryKey not in itemFound.values:
+        isSuccess = False
+        return
+    index = -1
+    try:
+        index = itemFound.values.index(primaryKey)
+    except:
+        isSuccess = False
+        return
+    record = itemFound.keys[index]
+    deleteRecordHelper(primaryKey, record, typeName)
 
 def updateRecord(params):
-    typeName = params[0]
-    primaryKey = params[1]
-    fieldValues = params[1:]
-    tree = bPlusTrees.get(typeName)
-    itemFound = tree.find(typeName, primaryKey)
-    if not itemFound:
-        global isSuccess
+    global isSuccess
+    if len(params) < 2:
         isSuccess = False
         return
-    #TODO: Sonrasında search ile page id-slot bulunacak, tree'den bulunan page-id slot ikilisi kullanılarak
-    #TODO: ilgili file'da update edeceğiz
+    typeName = params[0]
+    primaryKey = params[1]
+    foundType = False
+    fieldNumTotal = 0
+    for el in attributeCatalogValues:
+        elements = el.split()
+        if elements[1] == typeName:
+            fieldNumTotal += 1
+            if elements[4] == "True" and elements[2] == "int":
+                primaryKey = int(primaryKey)
+            foundType=True
+    
+    if not foundType:
+        isSuccess = False
+        return
+    if len(params) < 1 + fieldNumTotal:
+        isSuccess = False
+        return
+    fieldValues = params[2:]
+    tree = bPlusTrees.get(typeName)
+    if not tree:
+        isSuccess = False
+        return
+    itemFound = tree.search(primaryKey)
+    if primaryKey not in itemFound.values:
+        isSuccess = False
+        return
+    index = -1
+    try:
+        index = itemFound.values.index(primaryKey)
+    except:
+        isSuccess = False
+        return
+    record = itemFound.keys[index]
+    dashIndex = record.find('-')
+    pageNo = int(record[0:dashIndex])
+    recordNo = int(record[dashIndex+1:])
+    fileNo = 0
+    if(pageNo%10==0):
+        fileNo = pageNo // 10
+        pageNo = 10
+    else:
+        fileNo = (pageNo // 10) + 1
+        pageNo = pageNo % 10
+    
+    foundFileName = "storage_file_"+str(fileNo)+".txt"
+    tempFile = open(foundFileName, "r")
+    allLines = tempFile.readlines()
+    changeLine = allLines[((pageNo-1)*11)+recordNo].strip()
+    substrLimit = 3 + len(typeName)
+    updatedRow = ""
+    for i in fieldValues:
+        updatedRow=updatedRow+i+" "
+    allLines[((pageNo-1)*11)+recordNo] = changeLine[0:substrLimit] + updatedRow
+    if(len(allLines) != ((pageNo-1)*11)+recordNo + 1):
+        allLines[((pageNo-1)*11)+recordNo] = allLines[((pageNo-1)*11)+recordNo] + '\n'
+    out = open(foundFileName, "w")
+    out.writelines(allLines)
+    out.close()
 
 
 def searchRecord(params):
-    typeName = params[0]
-    primaryKey = params[1]
-    tree = bPlusTrees.get(typeName)
-    itemFound = tree.find(typeName, primaryKey)
-    if not itemFound:
-        global isSuccess
+    global isSuccess
+    if len(params) < 2:
         isSuccess = False
         return
-    doesFileNotExist = fileNotExists(outputFileName)
-    itemSelf = tree.search(typeName).values[0]
-    if not doesFileNotExist:
-        createdFiles.add(outputFileName)
-        outputFile.write('\n')
-        doesFileNotExist = False
-    #TODO: Itemself typename yazıyor şu anda, tree'den bulunan page-id slot ikilisi kullanılarak
-    #TODO: ilgili file'dan veriler çekilecek ve tüm field'lar dosyaya yazılacak
-    createdFiles.add(outputFileName)
-    outputFile.write(itemSelf)
-    doesFileNotExist = False
-    return itemSelf
+    typeName = params[0]
+    primaryKey = params[1]
+    for el in attributeCatalogValues:
+        elements = el.split()
+        if elements[4] == "True" and elements[2] == "int" and elements[1] == typeName:
+            primaryKey = int(primaryKey)
+    tree = bPlusTrees.get(typeName)
+    if not tree:
+        isSuccess = False
+        return
+    itemFound = tree.search(primaryKey)
+    if primaryKey not in itemFound.values:
+        isSuccess = False
+        return
+    index = -1
+    try:
+        index = itemFound.values.index(primaryKey)
+    except:
+        isSuccess = False
+        return
+    record = itemFound.keys[index]
+    dashIndex = record.find('-')
+    pageNo = int(record[0:dashIndex])
+    recordNo = int(record[dashIndex+1:])
+    fileNo = 0
+    if(pageNo%10==0):
+        fileNo = pageNo // 10
+        pageNo = 10
+    else:
+        fileNo = (pageNo // 10) + 1
+        pageNo = pageNo % 10
+    foundFileName = "storage_file_"+str(fileNo)+".txt"
+    tempFile = open(foundFileName, "r")
+    allLines = tempFile.readlines()
+    changeLine = allLines[((pageNo-1)*11)+recordNo].strip()
+    outputFile = open(outputFileName, "a+")
+    words = changeLine.split()[2:]
+    for i in range(len(words)):
+        if i == 0 and os.stat(outputFileName).st_size != 0:
+            outputFile.write('\n')
+        outputFile.write(words[i])
+        if i != len(words) - 1:
+            outputFile.write(' ')
+    outputFile.close()
 
 
 def filterRecord(params):
-  typeName = params[0]
-  condition = params[1]
-  #TODO: Search'tekilerin aynısı
+    global isSuccess
+    if len(params) < 2:
+        isSuccess = False
+        return
+    typeName = params[0]
+    condition = params[1]
+    condType = ''
+    index = -1
+    try:
+        index = condition.find('<')
+        if index != -1:
+            condType = '<'
+        if index == -1:
+            index = condition.find('>')
+            if index != -1:
+                condType = '>'
+        if index == -1:
+            index = condition.find('=')
+            if index != -1:
+                condType = '='
+    except:
+        index = -1
+    if condType == '':
+        isSuccess = False
+        return
+    fieldName = condition[0: index]
+    compValue = condition[index+1:]
+    tree = bPlusTrees.get(typeName)
+    if not tree:
+        isSuccess = False
+        return
+    allFoundValues = tree.findAllValues()
+    allFoundValues = sorted(allFoundValues)
+    if len(allFoundValues) == 0:
+        isSuccess = False
+        return
+    for value in allFoundValues:
+        itemFound = tree.search(value)
+        index = -1
+        try:
+            index = itemFound.values.index(value)
+        except:
+            isSuccess = False
+            return
+        record = itemFound.keys[index]
+        dashIndex = record.find('-')
+        pageNo = int(record[0:dashIndex])
+        recordNo = int(record[dashIndex+1:])
+        fileNo = 0
+        if(pageNo%10==0):
+            fileNo = pageNo // 10
+            pageNo = 10
+        else:
+            fileNo = (pageNo // 10) + 1
+            pageNo = pageNo % 10
+        foundFileName = "storage_file_"+str(fileNo)+".txt"
+        tempFile = open(foundFileName, "r")
+        allLines = tempFile.readlines()
+        changeLine = allLines[((pageNo-1)*11)+recordNo].strip()
+        words = changeLine.split()[2:]
+        fieldIndex = -1
+        isInteger = False
+        for el in attributeCatalogValues:
+            elements = el.split()
+            if(str(elements[0]) == fieldName):
+                fieldIndex = int(elements[3])
+                if elements[2] == "int":
+                    isInteger = True
+        if fieldIndex == -1:
+            isSuccess = False
+            return
+        word = words[fieldIndex-1]
+        if isInteger:
+            shouldContinue = checkInteger("int", word)
+            if not shouldContinue:
+                isSuccess = False
+                return
+            shouldContinue = checkInteger("int", compValue)
+            if not shouldContinue:
+                isSuccess = False
+                return
+            word = int(word)
+            compValue = int(compValue)
+        if condType == '>':
+            if word <= compValue:
+                continue
+        elif condType == '<':
+            if word >= compValue:
+                continue
+        elif condType == '=':
+            if word < compValue or word > compValue:
+                continue
+        outputFile = open(outputFileName, "a+")
+        for i in range(len(words)):
+            if i == 0 and os.stat(outputFileName).st_size != 0:
+                outputFile.write('\n')
+            outputFile.write(words[i])
+            if i != len(words) - 1:
+                outputFile.write(' ')
+        outputFile.close()
 
 
 def listRecord(params):
-  typeName = params[0]
-  #TODO: Bütün search tree taranıp tek tek kontrol edilerek çekilecek
+    global isSuccess
+    if len(params) < 1:
+        isSuccess = False
+        return
+    typeName = params[0]
+    tree = bPlusTrees.get(typeName)
+    if not tree:
+        isSuccess = False
+        return
+    allFoundValues = tree.findAllValues()
+    allFoundValues = sorted(allFoundValues)
+    if len(allFoundValues) == 0:
+        isSuccess = False
+        return
+    for value in allFoundValues:
+        itemFound = tree.search(value)
+        index = -1
+        try:
+            index = itemFound.values.index(value)
+        except:
+            isSuccess = False
+            return
+        record = itemFound.keys[index]
+        dashIndex = record.find('-')
+        pageNo = int(record[0:dashIndex])
+        recordNo = int(record[dashIndex+1:])
+        fileNo = 0
+        if(pageNo%10==0):
+            fileNo = pageNo // 10
+            pageNo = 10
+        else:
+            fileNo = (pageNo // 10) + 1
+            pageNo = pageNo % 10
+        foundFileName = "storage_file_"+str(fileNo)+".txt"
+        tempFile = open(foundFileName, "r")
+        allLines = tempFile.readlines()
+        changeLine = allLines[((pageNo-1)*11)+recordNo].strip()
+        words = changeLine.split()[2:]
+        outputFile = open(outputFileName, "a+")
+        for i in range(len(words)):
+            if i == 0 and os.stat(outputFileName).st_size != 0:
+                outputFile.write('\n')
+            outputFile.write(words[i])
+            if i != len(words) - 1:
+                outputFile.write(' ')
+        outputFile.close()
 
 
 def listType():
@@ -557,20 +1046,25 @@ def listType():
     for el in attributeCatalogValues[1:]:
         elements = el.split()
         typeSet.add(elements[1])
-    doesFileNotExist = fileNotExists(outputFileName)
-    for type in typeSet:
-        if not doesFileNotExist:
-            createdFiles.add(outputFileName)
+    outputFile = open(outputFileName, "a+")
+    typeSet = sorted(list(typeSet))
+    if len(typeSet) == 0:
+        global isSuccess
+        isSuccess = False
+        return
+    for i in range(len(typeSet)):
+        if i != 0 or os.stat(outputFileName).st_size != 0:
             outputFile.write('\n')
-        createdFiles.add(outputFileName)
-        outputFile.write(type)
-        doesFileNotExist = False
-    return typeSet
+        outputFile.write(typeSet[i])
+    outputFile.close()
 
 
-isSuccess = True
 def handleOperation(line):
     words = line.split()
+    global isSuccess
+    if len(words) < 2:
+        isSuccess = False
+        return
     operationType = words[0]
     itemType = words[1]
     remainingParams = words[2:]
@@ -602,49 +1096,6 @@ def handleOperation(line):
     if not isSuccess:
         logInfo[2] = "failure"
     logFileEntries.append(logInfo)
-
-if fileNotExists(systemCatalogFileName):
-    cateRelString = "# Attr_Cat("
-    cateRelString += ', '.join(attributeCatalogTitles)
-    cateRelString += ")\n"
-    createdFiles.add(systemCatalogFileName)
-    systemCatalogFileWrite.write(cateRelString)
-    systemCatalogFileWrite.write(tableAlignedText(attributeCatalogTitles))
-    systemCatalogFileWrite.write("------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n")
-    for row in attributeCatalogSubRows:
-        systemCatalogFileWrite.write(tableAlignedText(row))
-
-    cateIndString = "# Index_Cat("
-    cateIndString += ', '.join(indexCatalogTitles)
-    cateIndString += ")\n"
-    createdFiles.add(indexCatalogFileName)
-    indexCatalogFileWrite.write(cateIndString)
-    indexCatalogFileWrite.write(tableAlignedText(indexCatalogTitles, 4))
-    indexCatalogFileWrite.write("------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n")
-    for row in indexCatalogSubRows:
-        indexCatalogFileWrite.write(tableAlignedText(row, 4))
-
-    logFile.writerow(logFileTitles)
-
-readRowNum = 0
-while True:
-    readRowNum += 1
-    line = systemCatalogFileRead.readline().strip()
-    if not line:
-      break
-    if readRowNum < 7:
-      continue
-    attributeCatalogValues.append(line.strip())
-
-readRowNum = 0
-while True:
-    readRowNum += 1
-    line = indexCatalogFileRead.readline().strip()
-    if not line:
-      break
-    if readRowNum < 3:
-      continue
-    indexCatalogValues.append(line.strip())
  
 while True:
     isSuccess = True
@@ -661,13 +1112,14 @@ for el in newIndexCatalogValues:
     createdFiles.add(indexCatalogFileName)
     indexCatalogFileWrite.write(el)
 
+#NOTE: This adds an extra new line to the end but we thought that it will not be a problem.
 logFile.writerows(logFileEntries)
 
 inputFile.close()
 
-outputFile.close()
 systemCatalogFileRead.close()
 systemCatalogFileWrite.close()
 indexCatalogFileRead.close()
 indexCatalogFileWrite.close()
 fLog.close()
+outputFileW.close()
