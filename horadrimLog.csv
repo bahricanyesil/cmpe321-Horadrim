@@ -196,3 +196,293 @@ occurrence,operation,status
 1653645197,search record potion 6,success
 1653645197,filter record evil name>Baal,success
 1653645197,list type,success
+1653645683,create record evil Diablo PrimeEvil LordOfTerror redLightningHose,failure
+1653645683,create type angel 3 1 name str alias str affiliation str,failure
+1653645683,delete record angel Itherael,failure
+1653645683,create type potion 3 1 id int type str size str,failure
+1653645683,create record potion 4 healing greater,success
+1653645683,create record potion 11 stamina standard,success
+1653645683,create record potion 6 mana minor,success
+1653645683,create record evil Belial LesserEvil LordOfLies flySwarms,failure
+1653645683,create record potion 4 healing greater,success
+1653645683,create record potion 11 stamina standard,success
+1653645683,create record potion 6 mana minor,success
+1653645683,create record evil Belial LesserEvil LordOfLies flySwarms,failure
+1653645683,create record potion 4 healing greater,success
+1653645683,create record potion 11 stamina standard,success
+1653645683,create record potion 6 mana minor,success
+1653645683,create record evil Belial LesserEvil LordOfLies flySwarms,failure
+1653645683,create record potion 4 healing greater,success
+1653645683,create record potion 11 stamina standard,success
+1653645683,create record potion 6 mana minor,success
+1653645683,create record evil Belial LesserEvil LordOfLies flySwarms,failure
+1653645683,create record potion 4 healing greater,success
+1653645683,create record potion 11 stamina standard,success
+1653645683,create record potion 6 mana minor,success
+1653645683,create record evil Belial LesserEvil LordOfLies flySwarms,failure
+1653645683,create record potion 4 healing greater,success
+1653645683,create record potion 11 stamina standard,success
+1653645683,create record potion 6 mana minor,success
+1653645683,create record evil Belial LesserEvil LordOfLies flySwarms,failure
+1653645683,create record potion 4 healing greater,success
+1653645683,create record potion 11 stamina standard,success
+1653645683,create record potion 6 mana minor,success
+1653645683,create record evil Belial LesserEvil LordOfLies flySwarms,failure
+1653645683,create record potion 4 healing greater,success
+1653645683,create record potion 11 stamina standard,success
+1653645683,create record potion 6 mana minor,success
+1653645683,create record evil Belial LesserEvil LordOfLies flySwarms,failure
+1653645683,create record potion 4 healing greater,success
+1653645683,create record potion 11 stamina standard,success
+1653645683,create record potion 6 mana minor,success
+1653645683,create record evil Belial LesserEvil LordOfLies flySwarms,failure
+1653645683,create record potion 4 healing greater,success
+1653645683,create record potion 11 stamina standard,success
+1653645683,create record potion 6 mana minor,success
+1653645683,create record evil Belial LesserEvil LordOfLies flySwarms,failure
+1653645683,create record potion 4 healing greater,success
+1653645683,create record potion 11 stamina standard,success
+1653645683,create record potion 6 mana minor,success
+1653645683,create record evil Belial LesserEvil LordOfLies flySwarms,failure
+1653645683,create record potion 4 healing greater,success
+1653645683,create record potion 11 stamina standard,success
+1653645683,create record potion 6 mana minor,success
+1653645683,create record evil Belial LesserEvil LordOfLies flySwarms,failure
+1653645683,create record potion 4 healing greater,success
+1653645683,create record potion 11 stamina standard,success
+1653645683,create record potion 6 mana minor,success
+1653645683,create record evil Belial LesserEvil LordOfLies flySwarms,failure
+1653645683,create record potion 4 healing greater,success
+1653645683,create record potion 11 stamina standard,success
+1653645683,create record potion 6 mana minor,success
+1653645683,create record evil Belial LesserEvil LordOfLies flySwarms,failure
+1653645683,create record potion 4 healing greater,success
+1653645683,create record potion 11 stamina standard,success
+1653645683,create record potion 6 mana minor,success
+1653645683,create record evil Belial LesserEvil LordOfLies flySwarms,failure
+1653645683,create record potion 4 healing greater,success
+1653645683,create record potion 11 stamina standard,success
+1653645683,create record potion 6 mana minor,success
+1653645683,create record evil Belial LesserEvil LordOfLies flySwarms,failure
+1653645683,create record potion 4 healing greater,success
+1653645683,create record potion 11 stamina standard,success
+1653645683,create record potion 6 mana minor,success
+1653645683,create record evil Belial LesserEvil LordOfLies flySwarms,failure
+1653645683,create record potion 4 healing greater,success
+1653645683,create record potion 11 stamina standard,success
+1653645683,create record potion 6 mana minor,success
+1653645683,create record evil Belial LesserEvil LordOfLies flySwarms,failure
+1653645683,create record potion 4 healing greater,success
+1653645683,create record potion 11 stamina standard,success
+1653645683,create record potion 6 mana minor,success
+1653645683,create record evil Belial LesserEvil LordOfLies flySwarms,failure
+1653645683,create record potion 4 healing greater,success
+1653645683,create record potion 11 stamina standard,success
+1653645683,create record potion 6 mana minor,success
+1653645683,create record evil Belial LesserEvil LordOfLies flySwarms,failure
+1653645683,create record potion 4 healing greater,success
+1653645683,create record potion 11 stamina standard,success
+1653645683,create record potion 6 mana minor,success
+1653645683,create record evil Belial LesserEvil LordOfLies flySwarms,failure
+1653645683,create record potion 4 healing greater,success
+1653645683,create record potion 11 stamina standard,success
+1653645683,create record potion 6 mana minor,success
+1653645683,create record evil Belial LesserEvil LordOfLies flySwarms,failure
+1653645684,create record potion 4 healing greater,success
+1653645684,create record potion 11 stamina standard,success
+1653645684,create record potion 6 mana minor,success
+1653645684,create record evil Belial LesserEvil LordOfLies flySwarms,failure
+1653645684,create record potion 4 healing greater,success
+1653645684,create record potion 11 stamina standard,success
+1653645684,create record potion 6 mana minor,success
+1653645684,create record evil Belial LesserEvil LordOfLies flySwarms,failure
+1653645684,create record potion 4 healing greater,success
+1653645684,create record potion 11 stamina standard,success
+1653645684,create record potion 6 mana minor,success
+1653645684,create record evil Belial LesserEvil LordOfLies flySwarms,failure
+1653645684,create record potion 4 healing greater,success
+1653645684,create record potion 11 stamina standard,success
+1653645684,create record potion 6 mana minor,success
+1653645684,create record evil Belial LesserEvil LordOfLies flySwarms,failure
+1653645684,create record potion 4 healing greater,success
+1653645684,create record potion 11 stamina standard,success
+1653645684,create record potion 6 mana minor,success
+1653645684,create record evil Belial LesserEvil LordOfLies flySwarms,failure
+1653645684,create record potion 4 healing greater,success
+1653645684,create record potion 11 stamina standard,success
+1653645684,create record potion 6 mana minor,success
+1653645684,create record evil Belial LesserEvil LordOfLies flySwarms,failure
+1653645684,create record potion 4 healing greater,success
+1653645684,create record potion 11 stamina standard,success
+1653645684,create record potion 6 mana minor,success
+1653645684,create record evil Belial LesserEvil LordOfLies flySwarms,failure
+1653645684,create record potion 4 healing greater,success
+1653645684,create record potion 11 stamina standard,success
+1653645684,create record potion 6 mana minor,success
+1653645684,create record evil Belial LesserEvil LordOfLies flySwarms,failure
+1653645684,create record potion 4 healing greater,success
+1653645684,create record potion 11 stamina standard,success
+1653645684,create record potion 6 mana minor,success
+1653645684,create record evil Belial LesserEvil LordOfLies flySwarms,failure
+1653645684,create record potion 4 healing greater,success
+1653645684,create record potion 11 stamina standard,success
+1653645684,create record potion 6 mana minor,success
+1653645684,create record evil Belial LesserEvil LordOfLies flySwarms,failure
+1653645684,create record potion 4 healing greater,success
+1653645684,create record potion 11 stamina standard,success
+1653645684,create record potion 6 mana minor,success
+1653645684,create record evil Belial LesserEvil LordOfLies flySwarms,failure
+1653645684,create record potion 4 healing greater,success
+1653645684,create record potion 11 stamina standard,success
+1653645684,create record potion 6 mana minor,success
+1653645684,create record evil Belial LesserEvil LordOfLies flySwarms,failure
+1653645684,filter record potion id>5,success
+1653645684,search record angel Tyrael,failure
+1653645684,search record potion 6,success
+1653645684,filter record evil name>Baal,success
+1653645684,list type,success
+1653645709,create record evil Diablo PrimeEvil LordOfTerror redLightningHose,failure
+1653645709,create type angel 3 1 name str alias str affiliation str,failure
+1653645709,delete record angel Itherael,failure
+1653645709,create type potion 3 1 id int type str size str,failure
+1653645709,create record potion 4 healing greater,success
+1653645709,create record potion 11 stamina standard,success
+1653645709,create record potion 6 mana minor,success
+1653645709,create record evil Belial LesserEvil LordOfLies flySwarms,failure
+1653645709,create record potion 4 healing greater,success
+1653645709,create record potion 11 stamina standard,success
+1653645709,create record potion 6 mana minor,success
+1653645709,create record evil Belial LesserEvil LordOfLies flySwarms,failure
+1653645709,create record potion 4 healing greater,success
+1653645709,create record potion 11 stamina standard,success
+1653645709,create record potion 6 mana minor,success
+1653645709,create record evil Belial LesserEvil LordOfLies flySwarms,failure
+1653645709,create record potion 4 healing greater,success
+1653645709,create record potion 11 stamina standard,success
+1653645709,create record potion 6 mana minor,success
+1653645709,create record evil Belial LesserEvil LordOfLies flySwarms,failure
+1653645709,create record potion 4 healing greater,success
+1653645709,create record potion 11 stamina standard,success
+1653645709,create record potion 6 mana minor,success
+1653645709,create record evil Belial LesserEvil LordOfLies flySwarms,failure
+1653645709,create record potion 4 healing greater,success
+1653645709,create record potion 11 stamina standard,success
+1653645709,create record potion 6 mana minor,success
+1653645709,create record evil Belial LesserEvil LordOfLies flySwarms,failure
+1653645709,create record potion 4 healing greater,success
+1653645709,create record potion 11 stamina standard,success
+1653645709,create record potion 6 mana minor,success
+1653645709,create record evil Belial LesserEvil LordOfLies flySwarms,failure
+1653645709,create record potion 4 healing greater,success
+1653645709,create record potion 11 stamina standard,success
+1653645709,create record potion 6 mana minor,success
+1653645709,create record evil Belial LesserEvil LordOfLies flySwarms,failure
+1653645709,create record potion 4 healing greater,success
+1653645709,create record potion 11 stamina standard,success
+1653645709,create record potion 6 mana minor,success
+1653645709,create record evil Belial LesserEvil LordOfLies flySwarms,failure
+1653645709,create record potion 4 healing greater,success
+1653645709,create record potion 11 stamina standard,success
+1653645709,create record potion 6 mana minor,success
+1653645709,create record evil Belial LesserEvil LordOfLies flySwarms,failure
+1653645709,create record potion 4 healing greater,success
+1653645709,create record potion 11 stamina standard,success
+1653645709,create record potion 6 mana minor,success
+1653645709,create record evil Belial LesserEvil LordOfLies flySwarms,failure
+1653645709,create record potion 4 healing greater,success
+1653645709,create record potion 11 stamina standard,success
+1653645709,create record potion 6 mana minor,success
+1653645709,create record evil Belial LesserEvil LordOfLies flySwarms,failure
+1653645709,create record potion 4 healing greater,success
+1653645709,create record potion 11 stamina standard,success
+1653645709,create record potion 6 mana minor,success
+1653645709,create record evil Belial LesserEvil LordOfLies flySwarms,failure
+1653645709,create record potion 4 healing greater,success
+1653645709,create record potion 11 stamina standard,success
+1653645709,create record potion 6 mana minor,success
+1653645709,create record evil Belial LesserEvil LordOfLies flySwarms,failure
+1653645709,create record potion 4 healing greater,success
+1653645709,create record potion 11 stamina standard,success
+1653645709,create record potion 6 mana minor,success
+1653645709,create record evil Belial LesserEvil LordOfLies flySwarms,failure
+1653645709,create record potion 4 healing greater,success
+1653645709,create record potion 11 stamina standard,success
+1653645709,create record potion 6 mana minor,success
+1653645709,create record evil Belial LesserEvil LordOfLies flySwarms,failure
+1653645709,create record potion 4 healing greater,success
+1653645709,create record potion 11 stamina standard,success
+1653645709,create record potion 6 mana minor,success
+1653645709,create record evil Belial LesserEvil LordOfLies flySwarms,failure
+1653645709,create record potion 4 healing greater,success
+1653645709,create record potion 11 stamina standard,success
+1653645709,create record potion 6 mana minor,success
+1653645709,create record evil Belial LesserEvil LordOfLies flySwarms,failure
+1653645709,create record potion 4 healing greater,success
+1653645709,create record potion 11 stamina standard,success
+1653645709,create record potion 6 mana minor,success
+1653645709,create record evil Belial LesserEvil LordOfLies flySwarms,failure
+1653645709,create record potion 4 healing greater,success
+1653645709,create record potion 11 stamina standard,success
+1653645709,create record potion 6 mana minor,success
+1653645709,create record evil Belial LesserEvil LordOfLies flySwarms,failure
+1653645709,create record potion 4 healing greater,success
+1653645709,create record potion 11 stamina standard,success
+1653645709,create record potion 6 mana minor,success
+1653645709,create record evil Belial LesserEvil LordOfLies flySwarms,failure
+1653645709,create record potion 4 healing greater,success
+1653645709,create record potion 11 stamina standard,success
+1653645709,create record potion 6 mana minor,success
+1653645709,create record evil Belial LesserEvil LordOfLies flySwarms,failure
+1653645709,create record potion 4 healing greater,success
+1653645709,create record potion 11 stamina standard,success
+1653645709,create record potion 6 mana minor,success
+1653645709,create record evil Belial LesserEvil LordOfLies flySwarms,failure
+1653645709,create record potion 4 healing greater,success
+1653645709,create record potion 11 stamina standard,success
+1653645709,create record potion 6 mana minor,success
+1653645709,create record evil Belial LesserEvil LordOfLies flySwarms,failure
+1653645709,create record potion 4 healing greater,success
+1653645709,create record potion 11 stamina standard,success
+1653645709,create record potion 6 mana minor,success
+1653645709,create record evil Belial LesserEvil LordOfLies flySwarms,failure
+1653645709,create record potion 4 healing greater,success
+1653645709,create record potion 11 stamina standard,success
+1653645709,create record potion 6 mana minor,success
+1653645709,create record evil Belial LesserEvil LordOfLies flySwarms,failure
+1653645709,create record potion 4 healing greater,success
+1653645709,create record potion 11 stamina standard,success
+1653645709,create record potion 6 mana minor,success
+1653645709,create record evil Belial LesserEvil LordOfLies flySwarms,failure
+1653645709,create record potion 4 healing greater,success
+1653645709,create record potion 11 stamina standard,success
+1653645709,create record potion 6 mana minor,success
+1653645709,create record evil Belial LesserEvil LordOfLies flySwarms,failure
+1653645709,create record potion 4 healing greater,success
+1653645709,create record potion 11 stamina standard,success
+1653645709,create record potion 6 mana minor,success
+1653645709,create record evil Belial LesserEvil LordOfLies flySwarms,failure
+1653645709,create record potion 4 healing greater,success
+1653645709,create record potion 11 stamina standard,success
+1653645709,create record potion 6 mana minor,success
+1653645709,create record evil Belial LesserEvil LordOfLies flySwarms,failure
+1653645709,create record potion 4 healing greater,success
+1653645709,create record potion 11 stamina standard,success
+1653645709,create record potion 6 mana minor,success
+1653645709,create record evil Belial LesserEvil LordOfLies flySwarms,failure
+1653645709,create record potion 4 healing greater,success
+1653645709,create record potion 11 stamina standard,success
+1653645709,create record potion 6 mana minor,success
+1653645709,create record evil Belial LesserEvil LordOfLies flySwarms,failure
+1653645709,create record potion 4 healing greater,success
+1653645709,create record potion 11 stamina standard,success
+1653645709,create record potion 6 mana minor,success
+1653645709,create record evil Belial LesserEvil LordOfLies flySwarms,failure
+1653645709,create record potion 4 healing greater,success
+1653645709,create record potion 11 stamina standard,success
+1653645709,create record potion 6 mana minor,success
+1653645709,create record evil Belial LesserEvil LordOfLies flySwarms,failure
+1653645709,filter record potion id>5,success
+1653645709,search record angel Tyrael,failure
+1653645709,search record potion 6,success
+1653645709,filter record evil name>Baal,success
+1653645709,list type,success

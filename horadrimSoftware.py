@@ -489,7 +489,7 @@ def createRecord(params):
 
     with open(currentStorageFileName,"a") as currentStorageFile:
         currentStorageFile.write("\n")
-        currentStorageFile.write("0 ")
+        currentStorageFile.write("0 " + typeName + " ")
         for i in range(len(fieldValues)):
             currentStorageFile.write(fieldValues[i] + " ")
 
