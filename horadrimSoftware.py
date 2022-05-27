@@ -7,6 +7,9 @@ import time
 bPlusTrees = {}
 record_len = 6
 
+isSuccess = True
+
+
 # Node creation
 class Node:
     def __init__(self, order):
@@ -315,6 +318,7 @@ for i in os.listdir('./'):
             if not line or len(lineWords) < 2:
                 break
             tree.insert(lineWords[0], lineWords[1])
+            print(lineWords)
         bPlusTrees[typeName] = tree
 
 storageFiles = []
@@ -382,8 +386,6 @@ indexCatalogValues = []
 newIndexCatalogValues = []
 
 def fileNotExists(fileName):
-    print(fileName)
-    print(createdFiles)
     if fileName in createdFiles:
         return False
     return os.stat(fileName).st_size == 0
@@ -411,10 +413,10 @@ def checkInteger(fieldType, fieldName):
 
 def createType(params):
     typeName = params[0]
+    global isSuccess
     for el in attributeCatalogValues:
         elements = el.split()
         if elements[1] == typeName:
-            global isSuccess
             isSuccess = False
             return
     numOfFields = int(params[1])
@@ -437,6 +439,9 @@ def createType(params):
     createdFiles.add(bTreeFileName)
     bTreeFile.write(typeName)
     tree = BPlusTree(record_len)
+    if not tree:
+        isSuccess = False
+        return
     bPlusTrees[typeName] = tree
     for tableAlignedValueRow in tableAlignedValueRowList:
         if tableAlignedValueRow.strip() not in attributeCatalogValues:
@@ -468,23 +473,23 @@ def createRecord(params):
         isSuccess = False
         return
     tree = bPlusTrees.get(typeName)
+    if not tree:
+        isSuccess = False
+        return
     global currentFileIndex
     global currentPageIndex
     global currentPageRecordIndex
     global currentEmptyRecordNumber
-    #TODO:  Find fonksiyonuna value olarak page-id slot ikilisi verilecek
-    itemFound = tree.find(currentPageIndex, currentPageRecordIndex)
+    pageIdSlot = str(currentPageIndex) + '-' + str(currentPageRecordIndex)
+    itemFound = tree.find(primaryKey, pageIdSlot)
     if itemFound:
         isSuccess = False
         return
-    #TODO: Bplustree'ye value olarak primary key, key oalrak pageId+slot
-    tree.insert(typeName, primaryKey)
+    tree.insert(primaryKey, pageIdSlot)
     bTreeFileName = findBTreeFileName(typeName)
     bTreeFile = open(bTreeFileName, "a")
-    #TODO: Dosyaya yazış tarzı değişecek
-    #TODO: Record headerda typeName tutacağız
     createdFiles.add(bTreeFileName)
-    bTreeFile.write("\n${} " + primaryKey)
+    bTreeFile.write("\n" + primaryKey + " " + pageIdSlot)
     currentStorageFileName = 'storage_file_'+ str(currentFileIndex) + '.txt' 
 
     with open(currentStorageFileName,"a") as currentStorageFile:
@@ -546,9 +551,12 @@ def deleteRecord(params):
     typeName = params[0]
     primaryKey = params[1]
     tree = bPlusTrees.get(typeName)
+    global isSuccess
+    if not tree:
+        isSuccess = False
+        return
     itemFound = tree.find(typeName, primaryKey)
     if not itemFound:
-        global isSuccess
         isSuccess = False
         return
     tree.delete(typeName, primaryKey)
@@ -576,9 +584,12 @@ def searchRecord(params):
     typeName = params[0]
     primaryKey = params[1]
     tree = bPlusTrees.get(typeName)
+    global isSuccess
+    if not tree:
+        isSuccess = False
+        return
     itemFound = tree.find(typeName, primaryKey)
     if not itemFound:
-        global isSuccess
         isSuccess = False
         return
     doesFileNotExist = fileNotExists(outputFileName)
@@ -622,7 +633,6 @@ def listType():
     return typeSet
 
 
-isSuccess = True
 def handleOperation(line):
     words = line.split()
     operationType = words[0]
