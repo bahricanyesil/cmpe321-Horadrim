@@ -1,3 +1,11 @@
 create type potion 3 1 id int type str size str
+<<<<<<< HEAD
 create record potion 21 damage strong
 update record potion 21 health life
+=======
+create type asd 3 1 id int type str size str
+create record asd 12 as123d asdasd
+create record asd 13564562 asd58678 asda56868sd
+list record asd
+list record potion
+>>>>>>> e564034b998d7320b052cf8f9f6cb04e0666f5ab
