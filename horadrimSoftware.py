@@ -448,7 +448,6 @@ storageFiles = []
 currentFileIndex = 0
 currentPageIndex = 0
 currentPageRecordIndex = 0
-currentEmptyRecordNumber = 0
 prefix = 'storage_file_'
 for i in os.listdir('./'):
     if os.path.isfile(os.path.join('./',i)) and prefix in i:
@@ -462,7 +461,6 @@ if not storageFiles:
     currentFileIndex = 1
     currentPageIndex = 1
     currentPageRecordIndex = 1
-    currentEmptyRecordNumber = 10
 
 else:
     lastFileName = prefix + str(len(storageFiles)) + '.txt'
@@ -470,7 +468,6 @@ else:
     currentFileIndex = len(storageFiles)
     currentPageIndex = (num_lines // 11) + 1
     currentPageRecordIndex = num_lines - (currentPageIndex-1)*11
-    currentEmptyRecordNumber = 11 - currentPageRecordIndex
 
 def createType(params):
     global isSuccess
@@ -556,13 +553,12 @@ def createRecord(params):
     global currentFileIndex
     global currentPageIndex
     global currentPageRecordIndex
-    global currentEmptyRecordNumber
     tempPageIndex = (currentFileIndex-1)*10+currentPageIndex
     pageIdSlot = str(tempPageIndex) + '-' + str(currentPageRecordIndex)
     itemFound = tree.search(primaryKey).values
-    # if primaryKey in itemFound:
-    #     isSuccess = False
-    #     return
+    if primaryKey in itemFound:
+         isSuccess = False
+         return
     tree.insert(primaryKey, pageIdSlot)
     bTreeFileName = findBTreeFileName(typeName)
     bTreeFile = open(bTreeFileName, "a")
@@ -579,14 +575,14 @@ def createRecord(params):
                 currentStorageFile.write(' ')
     tempFile = open(currentStorageFileName, "r")
     allLines = tempFile.readlines()
-    allLines[(currentPageIndex-1)*11] = str(currentEmptyRecordNumber-1) + "\n"
+    emptySlots = int(allLines[((currentPageIndex-1)*11)])
+    allLines[(currentPageIndex-1)*11] = str(emptySlots-1) + "\n"
     out = open(currentStorageFileName, "w")
     out.writelines(allLines)
     out.close()
 
     if(currentPageRecordIndex==10):
         currentPageRecordIndex=1
-        currentEmptyRecordNumber=10
         if(currentPageIndex==10):
             currentPageIndex=1
             newFileName = prefix + str(len(storageFiles)+1) + '.txt'
@@ -600,7 +596,6 @@ def createRecord(params):
             with open(currentStorageFileName,"a") as currentStorageFile:
                 currentStorageFile.write("\n10")
     else:
-        currentEmptyRecordNumber=currentEmptyRecordNumber-1
         currentPageRecordIndex=currentPageRecordIndex+1    
     bPlusTrees[typeName] = tree
 
@@ -727,6 +722,7 @@ def updateRecord(params):
         return
     typeName = params[0]
     primaryKey = params[1]
+    foundType = False
     fieldNumTotal = 0
     for el in attributeCatalogValues:
         elements = el.split()
@@ -734,17 +730,56 @@ def updateRecord(params):
             fieldNumTotal += 1
             if elements[4] == "True" and elements[2] == "int":
                 primaryKey = int(primaryKey)
-    if len(params) < 2 + fieldNumTotal:
+            foundType=True
+    
+    if not foundType:
+        isSuccess = False
+        return
+    if len(params) < 1 + fieldNumTotal:
         isSuccess = False
         return
     fieldValues = params[1:]
     tree = bPlusTrees.get(typeName)
-    itemFound = tree.search(primaryKey).values
-    if primaryKey not in itemFound:
+    if not tree:
         isSuccess = False
         return
-    #TODO: Sonrasında search ile page id-slot bulunacak, tree'den bulunan page-id slot ikilisi kullanılarak
-    #TODO: ilgili file'da update edeceğiz
+    itemFound = tree.search(primaryKey)
+    if primaryKey not in itemFound.values:
+        isSuccess = False
+        return
+    index = -1
+    try:
+        index = itemFound.values.index(primaryKey)
+    except:
+        isSuccess = False
+        return
+    record = itemFound.keys[index]
+    dashIndex = record.find('-')
+    pageNo = int(record[0:dashIndex])
+    recordNo = int(record[dashIndex+1:])
+    fileNo = 0
+    if(pageNo%10==0):
+        fileNo = pageNo // 10
+        pageNo = 10
+    else:
+        fileNo = (pageNo // 10) + 1
+        pageNo = pageNo % 10
+    
+    foundFileName = "storage_file_"+str(fileNo)+".txt"
+    tempFile = open(foundFileName, "r")
+    allLines = tempFile.readlines()
+    changeLine = allLines[((pageNo-1)*11)+recordNo].strip()
+    substrLimit = 3 + len(typeName)
+    updatedRow = ""
+    for i in fieldValues:
+        updatedRow=updatedRow+i+" "
+    allLines[((pageNo-1)*11)+recordNo] = changeLine[0:substrLimit] + updatedRow
+    if(len(allLines) != ((pageNo-1)*11)+recordNo + 1):
+        allLines[((pageNo-1)*11)+recordNo] = allLines[((pageNo-1)*11)+recordNo] + '\n'
+    out = open(foundFileName, "w")
+    out.writelines(allLines)
+    out.close()
+
 
 
 def searchRecord(params):

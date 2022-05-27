@@ -1,37 +1,12 @@
-occurrence,operation,status
-1653661891,create type potion 3 1 id int type str size str,success
-1653661891,create record potion 11 healing greater,success
-1653661891,create record potion 12 stamina a,success
-1653661891,create record potion 13 stamina a,success
-1653661891,create record potion 14 stamina a,success
-1653661891,create record potion 15 stamina a,success
-1653661891,create record potion 16 stamina a,success
-1653661891,create record potion 17 stamina a,success
-1653661891,create record potion 18 stamina a,success
-1653661891,create record potion 19 stamina a,success
-1653661891,create record potion 20 stamina a,success
-1653661891,create record potion 21 stamina a,success
-1653661920,create type potion 3 1 id int type str size str,failure
-1653661920,delete record potion 11 healing greater,success
-1653661928,create type potion 3 1 id int type str size str,failure
-1653661928,delete record potion 21 healing greater,success
-1653661937,create type potion 3 1 id int type str size str,failure
-1653661937,delete record potion 20 healing greater,success
-1653661950,create type potion 3 1 id int type str size str,failure
-1653661950,create record potion 21 healing greater,success
-1653661976,create type potion 3 1 id int type str size str,failure
-1653661976,create record potion 21 healing greater,success
-1653661986,create type potion 3 1 id int type str size str,failure
-1653661986,delete record potion 21 healing greater,success
-1653662025,create type potion 3 1 id int type str size str,failure
-1653662025,create record potion 21 healing greater,success
-1653662033,create type potion 3 1 id int type str size str,failure
-1653662033,delete record potion 21 healing greater,success
-1653662100,create type potion 3 1 id int type str size str,failure
-1653662100,create record potion 21 healing greater,success
-1653662108,create type potion 3 1 id int type str size str,failure
-1653662108,delete record potion 21 healing greater,success
-1653662117,create type potion 3 1 id int type str size str,failure
-1653662117,create record potion 21 healing greater,success
-1653662120,create type potion 3 1 id int type str size str,failure
-1653662120,delete record potion 21 healing greater,success
+occurrence,operation,status
+1653665554,create type potion 3 1 id int type str size str,success
+1653665554,create record potion 21 damage strong,success
+1653665554,delete record potion 21,success
+1653665560,create type potion 3 1 id int type str size str,failure
+1653665560,create record potion 21 damage strong,success
+1653665560,delete record potion 21,success
+1653665591,create type potion 3 1 id int type str size str,failure
+1653665591,create record potion 21 damage strong,success
+1653665591,update record potion 21 health life,success
+1653665618,create type potion 3 1 id int type str size str,failure
+1653665618,update record potion 22 health life,failure

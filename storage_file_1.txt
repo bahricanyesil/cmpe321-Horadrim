@@ -1,16 +1,4 @@
-2
-1 potion 11 healing greater
-0 potion 12 stamina a
-0 potion 13 stamina a
-0 potion 14 stamina a
-0 potion 15 stamina a
-0 potion 16 stamina a
-0 potion 17 stamina a
-0 potion 18 stamina a
-0 potion 19 stamina a
-1 potion 20 stamina a
-7
-1 potion 21 stamina a
-1 potion 21 healing greater
-1 potion 21 healing greater
-1 potion 21 healing greater
+9
+1 potion 21 damage strong
+1 potion 21 damage strong
+0 potion 21 health life 
