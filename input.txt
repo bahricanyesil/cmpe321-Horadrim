@@ -1,11 +1,27 @@
-create type potion 3 1 id int type str size str
-<<<<<<< HEAD
-create record potion 21 damage strong
-update record potion 21 health life
-=======
-create type asd 3 1 id int type str size str
-create record asd 12 as123d asdasd
-create record asd 13564562 asd58678 asda56868sd
-list record asd
-list record potion
->>>>>>> e564034b998d7320b052cf8f9f6cb04e0666f5ab
+create type angel 3 1 name str alias str affiliation str
+create record angel Tyrael ArchangelOfJustice HighHeavensw
+create record angel Tyrael456456456 ArchangelOfJustice HighHeavensw
+create record angel Tyrael75867 ArchangelOfJustice HighHeavensw
+create record angel Tyrael34536 ArchangelOfJustice HighHeavensw
+create record angel Tyrael234243 ArchangelOfJustice HighHeavensw
+create record angel Tyrael35345 ArchangelOfJustice HighHeavensw
+create record angel Tyrael36 ArchangelOfJustice HighHeavensw
+create record angel Tyrael12344 ArchangelOfJustice HighHeavensw
+create record angel Tyrael123123 ArchangelOfJustice HighHeavensw
+create record angel Tyrael22 ArchangelOfJustice HighHeavensw
+create record angel Tyrael222 ArchangelOfJustice HighHeavensw
+create record angel Tyrael2222 ArchangelOfJustice HighHeavensw
+create record angel Tyrael1111 ArchangelOfJustice HighHeavensw
+create record angel Tyrael111 ArchangelOfJustice HighHeavensw
+create record angel Tyrael11 ArchangelOfJustice HighHeavensw
+create record angel Tyrael9999 ArchangelOfJustice HighHeavensw
+create record angel Tyrael999 ArchangelOfJustice HighHeavensw
+create record angel Tyrael99 ArchangelOfJustice HighHeavensw
+create record angel Tyrael9 ArchangelOfJustice HighHeavensw
+create record angel Tyrael88 ArchangelOfJustice HighHeavensw
+create record angel Tyrael6 ArchangelOfJustice HighHeavensw
+create record angel Tyrael5 ArchangelOfJustice HighHeavensw
+create record angel Tyrael7 ArchangelOfJustice HighHeavensw
+create record angel Tyrael4 ArchangelOfJustice HighHeavensw
+create record angel Tyrael3 ArchangelOfJustice HighHeavensw
+create record angel Tyrael2 ArchangelOfJustice HighHeavensw
