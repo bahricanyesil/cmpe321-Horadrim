@@ -26,19 +26,19 @@ class Node:
             temp1 = self.values
             for i in range(len(temp1)):
                 if (value == temp1[i]):
-                    self.keys[i].append(key)
+                    self.keys.append(key)
                     break
                 elif (value < temp1[i]):
                     self.values = self.values[:i] + [value] + self.values[i:]
-                    self.keys = self.keys[:i] + [[key]] + self.keys[i:]
+                    self.keys = self.keys[:i] + [key] + self.keys[i:]
                     break
                 elif (i + 1 == len(temp1)):
                     self.values.append(value)
-                    self.keys.append([key])
+                    self.keys.append(key)
                     break
         else:
             self.values = [value]
-            self.keys = [[key]]
+            self.keys = [key]
 
 
 # B plus tree
@@ -86,8 +86,13 @@ class BPlusTree:
     # Find the node
     def find(self, value, key):
         l = self.search(value)
+        print('HERE')
+        print(value)
+        print(key)
         for i, item in enumerate(l.values):
+            print(item)
             if item == value:
+                print(l.keys[i])
                 if key in l.keys[i]:
                     return True
                 else:
@@ -139,10 +144,8 @@ class BPlusTree:
         for i, item in enumerate(node_.values):
             if item == value:
                 temp = 1
-                if key in node_.keys[i]:
-                    if len(node_.keys[i]) > 1:
-                        node_.keys[i].pop(node_.keys[i].index(key))
-                    elif node_ == self.root:
+                if key in node_.keys:
+                    if node_ == self.root:
                         node_.values.pop(i)
                         node_.keys.pop(i)
                     else:
@@ -296,10 +299,10 @@ def printTree(tree):
         lev = level.pop(0)
         if (x.check_leaf == False):
             for i, item in enumerate(x.keys):
-                print(item.values)
+                print(str(item) + '-' + str(x.values[i]))
         else:
             for i, item in enumerate(x.keys):
-                print(item.values)
+                print(str(item) + '-' + str(x.values[i]))
             if (flag == 0):
                 lev_leaf = lev
                 leaf = x
@@ -427,6 +430,7 @@ for i in os.listdir('./'):
                     primaryKey = int(primaryKey)
             tree.insert(primaryKey, lineWords[1])
         bPlusTrees[typeName] = tree
+        bTreeFile.close()
 
 storageFiles = []
 currentFileIndex = 0
@@ -485,6 +489,7 @@ def createType(params):
     bTreeFile = open(bTreeFileName, "w")
     createdFiles.add(bTreeFileName)
     bTreeFile.write(typeName)
+    bTreeFile.close()
     tree = BPlusTree(record_len)
     if not tree:
         isSuccess = False
@@ -539,6 +544,7 @@ def createRecord(params):
     bTreeFile = open(bTreeFileName, "a")
     createdFiles.add(bTreeFileName)
     bTreeFile.write("\n" + str(primaryKey) + " " + pageIdSlot)
+    bTreeFile.close()
     currentStorageFileName = 'storage_file_'+ str(currentFileIndex) + '.txt' 
 
     with open(currentStorageFileName,"a") as currentStorageFile:
@@ -572,6 +578,7 @@ def createRecord(params):
     else:
         currentEmptyRecordNumber=currentEmptyRecordNumber-1
         currentPageRecordIndex=currentPageRecordIndex+1    
+    bPlusTrees[typeName] = tree
 
 def deleteType(params):
     typeName = params[0]
@@ -589,27 +596,6 @@ def deleteType(params):
     os.remove(bTreeFileName)
     #TODO: Remove all records with this type.
 
-
-a = BPlusTree(6)
-a.insert(1, '^3')
-a.insert(2, '^3')
-a.insert(3, '^3')
-a.insert(4, '^3')
-a.insert(5, '^3')
-a.insert(7, '^3')
-a.insert(0, '^3')
-a.insert(81, '^3')
-a.insert(9, '^3')
-a.insert(19, '^3')
-print('HERE')
-i = 0
-root = a.root
-while i < 20:
-    i += 1
-    print(root.values)
-    root = a.search(root.values[0])
-print('HERE')
-
 def deleteRecord(params):
     typeName = params[0]
     primaryKey = params[1]
@@ -625,7 +611,6 @@ def deleteRecord(params):
         isSuccess = False
         return
     tree = bPlusTrees.get(typeName)
-    # printTree(tree)
     if not tree:
         isSuccess = False
         return
@@ -639,15 +624,27 @@ def deleteRecord(params):
     except:
         isSuccess = False
         return
-    print(itemFound.keys[index])
-    print(itemFound.keys)
-    print(itemFound.values)
-    
-    print(primaryKey)
-    print(tree.find(primaryKey, itemFound.keys[index]))
     tree.delete(primaryKey, itemFound.keys[index])
+    bTreeFileName = findBTreeFileName(typeName)
+    bTreeFile = open(bTreeFileName, "r+")
+    createdFiles.add(bTreeFileName)
+    allText = ''
+    while True:
+        line = bTreeFile.readline().strip()
+        if not line:
+            break
+        else:
+            words = line.split()
+            print(words)
+            if not(str(words[0]) == str(primaryKey)):
+                if not(allText == ''):
+                    allText += '\n'
+                allText += line
+    bTreeFile.close()
+    bTreeFileW = open(bTreeFileName, "w")
+    bTreeFileW.write(allText)
+    bPlusTrees[typeName] = tree
     #TODO: Delete bitini değiştireceğiz
-    #TODO: Tree dosyasından da sileceğiz
     #TODO: Page header'da silme bitini işaretleyeceğiz
     #TODO: Kaç boş olduğunu gösteren sayıyı artıracağız
 
