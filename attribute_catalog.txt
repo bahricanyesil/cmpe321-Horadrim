@@ -8,3 +8,6 @@
                        id                    potion                       int                         1                      True
                      type                    potion                       str                         2                     False
                      size                    potion                       str                         3                     False
+                       id                       asd                       int                         1                      True
+                     type                       asd                       str                         2                     False
+                     size                       asd                       str                         3                     False

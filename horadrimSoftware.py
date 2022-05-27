@@ -12,6 +12,8 @@ bPlusTrees = {}
 record_len = 6
 
 isSuccess = True
+outputFileName = "output.txt"
+outputFileW = open(outputFileName, "w")
 
 
 # Node creation
@@ -347,8 +349,6 @@ def checkInteger(fieldType, fieldName):
     return True
 
 inputFile = open("input.txt", "r")
-outputFileName = "output.txt"
-outputFile = open(outputFileName, "w")
 fLog = open('horadrimLog.csv', "a")
 logFile = csv.writer(fLog)
 systemCatalogFileName = "attribute_catalog.txt"
@@ -559,9 +559,9 @@ def createRecord(params):
     global currentEmptyRecordNumber
     pageIdSlot = str(currentPageIndex) + '-' + str(currentPageRecordIndex)
     itemFound = tree.search(primaryKey).values
-    # if primaryKey in itemFound:
-    #     isSuccess = False
-    #     return
+    if primaryKey in itemFound:
+        isSuccess = False
+        return
     tree.insert(primaryKey, pageIdSlot)
     bTreeFileName = findBTreeFileName(typeName)
     bTreeFile = open(bTreeFileName, "a")
@@ -756,12 +756,6 @@ def searchRecord(params):
     if not tree:
         isSuccess = False
         return
-    doesFileNotExist = fileNotExists(outputFileName)
-    if not doesFileNotExist:
-        createdFiles.add(outputFileName)
-        outputFile.write('\n')
-        doesFileNotExist = False
-    createdFiles.add(outputFileName)
     itemFound = tree.search(primaryKey)
     if primaryKey not in itemFound.values:
         isSuccess = False
@@ -773,11 +767,26 @@ def searchRecord(params):
         isSuccess = False
         return
     record = itemFound.keys[index]
-    #TODO: Itemself typename yazıyor şu anda, tree'den bulunan page-id slot ikilisi kullanılarak
-    #TODO: ilgili file'dan veriler çekilecek ve tüm field'lar dosyaya yazılacak
-    # outputFile.write(itemSelf[0])
-    # doesFileNotExist = False
-    # return itemSelf[0]
+    dashIndex = record.find('-')
+    pageNo = int(record[0:dashIndex])
+    recordNo = int(record[dashIndex+1:])
+    fileNo = (pageNo // 10) + 1
+    pageNo = pageNo % 10
+    if(pageNo == 0):
+        pageNo = 10
+    foundFileName = "storage_file_"+str(fileNo)+".txt"
+    tempFile = open(foundFileName, "r")
+    allLines = tempFile.readlines()
+    changeLine = allLines[((pageNo-1)*11)+recordNo].strip()
+    outputFile = open(outputFileName, "a+")
+    words = changeLine.split()[2:]
+    for i in range(len(words)):
+        if i == 0 and os.stat(outputFileName).st_size != 0:
+            outputFile.write('\n')
+        outputFile.write(words[i])
+        if i != len(words) - 1:
+            outputFile.write(' ')
+    outputFile.close()
 
 
 def filterRecord(params):
@@ -787,7 +796,93 @@ def filterRecord(params):
         return
     typeName = params[0]
     condition = params[1]
-    #TODO: Search'tekilerin aynısı
+    condType = ''
+    index = -1
+    try:
+        index = condition.find('<')
+        if index != -1:
+            condType = '<'
+        if index == -1:
+            index = condition.find('>')
+            if index != -1:
+                condType = '>'
+        if index == -1:
+            index = condition.find('=')
+            if index != -1:
+                condType = '='
+    except:
+        index = -1
+    if condType == '':
+        isSuccess = False
+        return
+    fieldName = condition[0: index]
+    compValue = condition[index+1:]
+    tree = bPlusTrees.get(typeName)
+    if not tree:
+        isSuccess = False
+        return
+    allFoundValues = tree.findAllValues()
+    for value in allFoundValues:
+        itemFound = tree.search(value)
+        index = -1
+        try:
+            index = itemFound.values.index(value)
+        except:
+            isSuccess = False
+            return
+        record = itemFound.keys[index]
+        dashIndex = record.find('-')
+        pageNo = int(record[0:dashIndex])
+        recordNo = int(record[dashIndex+1:])
+        fileNo = (pageNo // 10) + 1
+        pageNo = pageNo % 10
+        if(pageNo == 0):
+            pageNo = 10
+        foundFileName = "storage_file_"+str(fileNo)+".txt"
+        tempFile = open(foundFileName, "r")
+        allLines = tempFile.readlines()
+        changeLine = allLines[((pageNo-1)*11)+recordNo].strip()
+        words = changeLine.split()[2:]
+        fieldIndex = -1
+        isInteger = False
+        for el in attributeCatalogValues:
+            elements = el.split()
+            if(str(elements[0]) == fieldName):
+                fieldIndex = int(elements[3])
+                if elements[2] == "int":
+                    isInteger = True
+        if fieldIndex == -1:
+            isSuccess = False
+            return
+        word = words[fieldIndex-1]
+        if isInteger:
+            shouldContinue = checkInteger("int", word)
+            if not shouldContinue:
+                isSuccess = False
+                return
+            shouldContinue = checkInteger("int", compValue)
+            if not shouldContinue:
+                isSuccess = False
+                return
+            word = int(word)
+            compValue = int(compValue)
+        if condType == '>':
+            if word <= compValue:
+                continue
+        elif condType == '<':
+            if word >= compValue:
+                continue
+        elif condType == '=':
+            if word < compValue or word > compValue:
+                continue
+        outputFile = open(outputFileName, "a+")
+        for i in range(len(words)):
+            if i == 0 and os.stat(outputFileName).st_size != 0:
+                outputFile.write('\n')
+            outputFile.write(words[i])
+            if i != len(words) - 1:
+                outputFile.write(' ')
+        outputFile.close()
 
 
 def listRecord(params):
@@ -804,15 +899,13 @@ def listType():
     for el in attributeCatalogValues[1:]:
         elements = el.split()
         typeSet.add(elements[1])
-    doesFileNotExist = fileNotExists(outputFileName)
-    for type in typeSet:
-        if not doesFileNotExist:
-            createdFiles.add(outputFileName)
+    outputFile = open(outputFileName, "a+")
+    typeSet = list(typeSet)
+    for i in range(len(typeSet)):
+        if i != 0 or os.stat(outputFileName).st_size != 0:
             outputFile.write('\n')
-        createdFiles.add(outputFileName)
-        outputFile.write(type)
-        doesFileNotExist = False
-    return typeSet
+        outputFile.write(typeSet[i])
+    outputFile.close()
 
 
 def handleOperation(line):
@@ -872,9 +965,9 @@ logFile.writerows(logFileEntries)
 
 inputFile.close()
 
-outputFile.close()
 systemCatalogFileRead.close()
 systemCatalogFileWrite.close()
 indexCatalogFileRead.close()
 indexCatalogFileWrite.close()
 fLog.close()
+outputFileW.close()

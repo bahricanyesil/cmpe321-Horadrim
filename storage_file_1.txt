@@ -9,8 +9,9 @@
 0 potion 18 stamina a
 0 potion 19 stamina a
 1 potion 20 stamina a
-7
+5
 1 potion 21 stamina a
 1 potion 21 healing greater
 1 potion 21 healing greater
 1 potion 21 healing greater
+0 potion 21 healing greater
