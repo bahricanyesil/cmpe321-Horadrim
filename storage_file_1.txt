@@ -9,9 +9,11 @@
 0 potion 18 stamina a
 0 potion 19 stamina a
 1 potion 20 stamina a
-5
+3
 1 potion 21 stamina a
 1 potion 21 healing greater
 1 potion 21 healing greater
 1 potion 21 healing greater
 0 potion 21 healing greater
+0 asd 12 as123d asdasd
+0 asd 13564562 asd58678 asda56868sd

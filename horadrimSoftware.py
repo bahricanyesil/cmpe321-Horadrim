@@ -897,7 +897,40 @@ def listRecord(params):
         isSuccess = False
         return
     typeName = params[0]
-    #TODO: Bütün search tree taranıp tek tek kontrol edilerek çekilecek
+    tree = bPlusTrees.get(typeName)
+    if not tree:
+        isSuccess = False
+        return
+    allFoundValues = tree.findAllValues()
+    for value in allFoundValues:
+        itemFound = tree.search(value)
+        index = -1
+        try:
+            index = itemFound.values.index(value)
+        except:
+            isSuccess = False
+            return
+        record = itemFound.keys[index]
+        dashIndex = record.find('-')
+        pageNo = int(record[0:dashIndex])
+        recordNo = int(record[dashIndex+1:])
+        fileNo = (pageNo // 10) + 1
+        pageNo = pageNo % 10
+        if(pageNo == 0):
+            pageNo = 10
+        foundFileName = "storage_file_"+str(fileNo)+".txt"
+        tempFile = open(foundFileName, "r")
+        allLines = tempFile.readlines()
+        changeLine = allLines[((pageNo-1)*11)+recordNo].strip()
+        words = changeLine.split()[2:]
+        outputFile = open(outputFileName, "a+")
+        for i in range(len(words)):
+            if i == 0 and os.stat(outputFileName).st_size != 0:
+                outputFile.write('\n')
+            outputFile.write(words[i])
+            if i != len(words) - 1:
+                outputFile.write(' ')
+        outputFile.close()
 
 
 def listType():

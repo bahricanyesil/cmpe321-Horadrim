@@ -1,3 +1,6 @@
 create type potion 3 1 id int type str size str
 create type asd 3 1 id int type str size str
-filter record potion id<16
+create record asd 12 as123d asdasd
+create record asd 13564562 asd58678 asda56868sd
+list record asd
+list record potion
