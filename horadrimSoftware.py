@@ -480,11 +480,8 @@ def createRecord(params):
     global currentPageRecordIndex
     global currentEmptyRecordNumber
     pageIdSlot = str(currentPageIndex) + '-' + str(currentPageRecordIndex)
-    itemFound = tree.find(primaryKey, pageIdSlot)
-    printTree(tree)
-    print(primaryKey)
-    print(pageIdSlot)
-    if itemFound:
+    itemFound = tree.search(primaryKey).values
+    if primaryKey in itemFound:
         isSuccess = False
         return
     tree.insert(primaryKey, pageIdSlot)
@@ -557,8 +554,8 @@ def deleteRecord(params):
     if not tree:
         isSuccess = False
         return
-    itemFound = tree.find(typeName, primaryKey)
-    if not itemFound:
+    itemFound = tree.search(primaryKey).values
+    if primaryKey in itemFound:
         isSuccess = False
         return
     tree.delete(typeName, primaryKey)
@@ -573,9 +570,9 @@ def updateRecord(params):
     primaryKey = params[1]
     fieldValues = params[1:]
     tree = bPlusTrees.get(typeName)
-    itemFound = tree.find(typeName, primaryKey)
-    if not itemFound:
-        global isSuccess
+    itemFound = tree.search(primaryKey).values
+    global isSuccess
+    if primaryKey in itemFound:
         isSuccess = False
         return
     #TODO: Sonrasında search ile page id-slot bulunacak, tree'den bulunan page-id slot ikilisi kullanılarak
@@ -590,22 +587,25 @@ def searchRecord(params):
     if not tree:
         isSuccess = False
         return
-    itemFound = tree.find(typeName, primaryKey)
-    if not itemFound:
+    itemFound = tree.search(primaryKey).values
+    if primaryKey in itemFound:
         isSuccess = False
         return
     doesFileNotExist = fileNotExists(outputFileName)
-    itemSelf = tree.search(typeName).values[0]
+    itemSelf = tree.search(typeName).values
     if not doesFileNotExist:
         createdFiles.add(outputFileName)
         outputFile.write('\n')
         doesFileNotExist = False
+    if not itemSelf:
+        isSuccess = False
+        return
     #TODO: Itemself typename yazıyor şu anda, tree'den bulunan page-id slot ikilisi kullanılarak
     #TODO: ilgili file'dan veriler çekilecek ve tüm field'lar dosyaya yazılacak
     createdFiles.add(outputFileName)
-    outputFile.write(itemSelf)
+    outputFile.write(itemSelf[0])
     doesFileNotExist = False
-    return itemSelf
+    return itemSelf[0]
 
 
 def filterRecord(params):
