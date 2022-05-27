@@ -557,7 +557,8 @@ def createRecord(params):
     global currentPageIndex
     global currentPageRecordIndex
     global currentEmptyRecordNumber
-    pageIdSlot = str(currentPageIndex) + '-' + str(currentPageRecordIndex)
+    tempPageIndex = (currentFileIndex-1)*10+currentPageIndex
+    pageIdSlot = str(tempPageIndex) + '-' + str(currentPageRecordIndex)
     itemFound = tree.search(primaryKey).values
     if primaryKey in itemFound:
         isSuccess = False
@@ -586,8 +587,8 @@ def createRecord(params):
     if(currentPageRecordIndex==10):
         currentPageRecordIndex=1
         currentEmptyRecordNumber=10
-        if(currentPageIndex%10==0):
-            currentPageIndex=currentPageIndex+1
+        if(currentPageIndex==10):
+            currentPageIndex=1
             newFileName = prefix + str(len(storageFiles)+1) + '.txt'
             with open(newFileName, 'wb') as f:
                 storageFiles.append(newFileName)
@@ -675,10 +676,15 @@ def deleteRecord(params):
     dashIndex = record.find('-')
     pageNo = int(record[0:dashIndex])
     recordNo = int(record[dashIndex+1:])
-    fileNo = (pageNo // 10) + 1
-    pageNo = pageNo % 10
-    if(pageNo == 0):
+    fileNo = 0
+    
+    if(pageNo%10==0):
+        fileNo = pageNo // 10
         pageNo = 10
+
+    else:
+        fileNo = (pageNo // 10) + 1
+        pageNo = pageNo % 10
 
     foundFileName = "storage_file_"+str(fileNo)+".txt"
     tempFile = open(foundFileName, "r")
