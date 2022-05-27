@@ -147,7 +147,6 @@ class BPlusTree:
                         node_.values.pop(i)
                         node_.keys.pop(i)
                     else:
-                        node_.keys[i].pop(node_.keys[i].index(key))
                         del node_.keys[i]
                         node_.values.pop(node_.values.index(value))
                         self.deleteEntry(node_, value, key)
@@ -191,9 +190,10 @@ class BPlusTree:
             del node_
             return
         elif (len(node_.keys) < int(math.ceil(node_.order / 2)) and node_.check_leaf == False) or (len(node_.values) < int(math.ceil((node_.order - 1) / 2)) and node_.check_leaf == True):
-
             is_predecessor = 0
             parentNode = node_.parent
+            if parentNode is None:
+                return
             PrevNode = -1
             NextNode = -1
             PrevK = -1
@@ -559,9 +559,9 @@ def createRecord(params):
     global currentEmptyRecordNumber
     pageIdSlot = str(currentPageIndex) + '-' + str(currentPageRecordIndex)
     itemFound = tree.search(primaryKey).values
-    if primaryKey in itemFound:
-        isSuccess = False
-        return
+    # if primaryKey in itemFound:
+    #     isSuccess = False
+    #     return
     tree.insert(primaryKey, pageIdSlot)
     bTreeFileName = findBTreeFileName(typeName)
     bTreeFile = open(bTreeFileName, "a")
@@ -571,14 +571,14 @@ def createRecord(params):
     currentStorageFileName = 'storage_file_'+ str(currentFileIndex) + '.txt' 
 
     with open(currentStorageFileName,"a") as currentStorageFile:
-        currentStorageFile.write("\n")
-        currentStorageFile.write("0 " + typeName + " ")
+        currentStorageFile.write("\n0 " + typeName + " ")
         for i in range(len(fieldValues)):
-            currentStorageFile.write(fieldValues[i] + " ")
-
+            currentStorageFile.write(fieldValues[i])
+            if(i != len(fieldValues)-1):
+                currentStorageFile.write(' ')
     tempFile = open(currentStorageFileName, "r")
     allLines = tempFile.readlines()
-    allLines[(currentPageIndex-1)*11] = str(currentEmptyRecordNumber-1)+"\n"
+    allLines[(currentPageIndex-1)*11] = str(currentEmptyRecordNumber-1) + "\n"
     out = open(currentStorageFileName, "w")
     out.writelines(allLines)
     out.close()
@@ -684,9 +684,11 @@ def deleteRecord(params):
     tempFile = open(foundFileName, "r")
     allLines = tempFile.readlines()
     emptyRecordsNum = int(allLines[((pageNo-1)*11)])
-    changeLine = allLines[((pageNo-1)*11)+recordNo]
+    changeLine = allLines[((pageNo-1)*11)+recordNo].strip()
     allLines[((pageNo-1)*11)] = str(emptyRecordsNum+1) + "\n"
     allLines[((pageNo-1)*11)+recordNo] = "1 " + changeLine[2:]
+    if(len(allLines) != ((pageNo-1)*11)+recordNo + 1):
+        allLines[((pageNo-1)*11)+recordNo] = allLines[((pageNo-1)*11)+recordNo] + '\n'
     out = open(foundFileName, "w")
     out.writelines(allLines)
     out.close()

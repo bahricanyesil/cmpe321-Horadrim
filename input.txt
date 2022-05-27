@@ -1,4 +1,2 @@
 create type potion 3 1 id int type str size str
-create record potion 6 healing greater
-create record potion 8 stamina a
-create record potion 0 stamina a
+delete record potion 21 healing greater
