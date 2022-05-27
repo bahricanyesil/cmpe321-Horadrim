@@ -49,7 +49,7 @@ class BPlusTree:
 
     # Insert operation
     def insert(self, value, key):
-        value = str(value)
+        value = value
         old_node = self.search(value)
         old_node.insert_at_leaf(old_node, value, key)
 
@@ -139,7 +139,6 @@ class BPlusTree:
         for i, item in enumerate(node_.values):
             if item == value:
                 temp = 1
-
                 if key in node_.keys[i]:
                     if len(node_.keys[i]) > 1:
                         node_.keys[i].pop(node_.keys[i].index(key))
@@ -306,49 +305,31 @@ def printTree(tree):
                 leaf = x
                 flag = 1
 
-prefix = 'B+TreeFile_'
-for i in os.listdir('./'):
-    if os.path.isfile(os.path.join('./',i)) and prefix in i:
-        tree = BPlusTree(record_len)
-        bTreeFile = open(i, 'r')
-        typeName = bTreeFile.readline().strip()
-        while True:
-            line = bTreeFile.readline()
-            lineWords = line.strip().split()
-            if not line or len(lineWords) < 2:
-                break
-            tree.insert(lineWords[0], lineWords[1])
-        bPlusTrees[typeName] = tree
+def fileNotExists(fileName):
+    if fileName in createdFiles:
+        return False
+    return os.stat(fileName).st_size == 0
 
-storageFiles = []
-currentFileIndex = 0
-currentPageIndex = 0
-currentPageRecordIndex = 0
-currentEmptyRecordNumber = 0
-#TODO:
-prefix = 'storage_file_'
-for i in os.listdir('./'):
-    if os.path.isfile(os.path.join('./',i)) and prefix in i:
-        storageFiles.append(i)
+def findBTreeFileName(typeName):
+    return 'B+TreeFile_' + typeName + '.txt'
 
-if not storageFiles:
-    newFileName = prefix + str(len(storageFiles)+1) + '.txt'
-    with open(newFileName, 'wb') as f:
-        storageFiles.append(newFileName)
-        f.write(b'10')
-    currentFileIndex = 1
-    currentPageIndex = 1
-    currentPageRecordIndex = 1
-    currentEmptyRecordNumber = 10
+def tableAlignedText(strList, length=5):
+  formatString = "{: >25}"
+  for i in range(1, length):
+    formatString += " {: >25}"
+  formatString += "\n"
+  return formatString.format(*strList)
 
-else:
-    #TODO: Storage file'dakileri bplustree'ye ekle
-    lastFileName = prefix + str(len(storageFiles)) + '.txt'
-    num_lines = sum(1 for line in open(lastFileName))
-    currentFileIndex = len(storageFiles)
-    currentPageIndex = (num_lines // 11) + 1
-    currentPageRecordIndex = num_lines - (currentPageIndex-1)*11
-    currentEmptyRecordNumber = int(linecache.getline(lastFileName, (currentPageIndex-1)*11+1))
+def checkInteger(fieldType, fieldName):
+    if fieldType == "int":
+        try:
+            intField = int(fieldName)
+            return True
+        except:
+            global isSuccess
+            isSuccess = False
+            return False
+    return True
 
 inputFile = open("input.txt", "r")
 outputFileName = "output.txt"
@@ -384,31 +365,98 @@ indexCatalogSubRows = [
 indexCatalogValues = []
 newIndexCatalogValues = []
 
-def fileNotExists(fileName):
-    if fileName in createdFiles:
-        return False
-    return os.stat(fileName).st_size == 0
 
-def findBTreeFileName(typeName):
-    return 'B+TreeFile_' + typeName + '.txt'
+if fileNotExists(systemCatalogFileName):
+    cateRelString = "# Attr_Cat("
+    cateRelString += ', '.join(attributeCatalogTitles)
+    cateRelString += ")\n"
+    createdFiles.add(systemCatalogFileName)
+    systemCatalogFileWrite.write(cateRelString)
+    systemCatalogFileWrite.write(tableAlignedText(attributeCatalogTitles))
+    systemCatalogFileWrite.write("------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n")
+    for row in attributeCatalogSubRows:
+        systemCatalogFileWrite.write(tableAlignedText(row))
 
-def tableAlignedText(strList, length=5):
-  formatString = "{: >25}"
-  for i in range(1, length):
-    formatString += " {: >25}"
-  formatString += "\n"
-  return formatString.format(*strList)
+    cateIndString = "# Index_Cat("
+    cateIndString += ', '.join(indexCatalogTitles)
+    cateIndString += ")\n"
+    createdFiles.add(indexCatalogFileName)
+    indexCatalogFileWrite.write(cateIndString)
+    indexCatalogFileWrite.write(tableAlignedText(indexCatalogTitles, 4))
+    indexCatalogFileWrite.write("------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n")
+    for row in indexCatalogSubRows:
+        indexCatalogFileWrite.write(tableAlignedText(row, 4))
 
-def checkInteger(fieldType, fieldName):
-    if fieldType == "int":
-        try:
-            intField = int(fieldName)
-            return True
-        except:
-            global isSuccess
-            isSuccess = False
-            return False
-    return True
+    logFile.writerow(logFileTitles)
+
+readRowNum = 0
+while True:
+    readRowNum += 1
+    line = systemCatalogFileRead.readline().strip()
+    if not line:
+      break
+    if readRowNum < 7:
+      continue
+    attributeCatalogValues.append(line.strip())
+
+readRowNum = 0
+while True:
+    readRowNum += 1
+    line = indexCatalogFileRead.readline().strip()
+    if not line:
+      break
+    if readRowNum < 3:
+      continue
+    indexCatalogValues.append(line.strip())
+
+prefix = 'B+TreeFile_'
+for i in os.listdir('./'):
+    if os.path.isfile(os.path.join('./',i)) and prefix in i:
+        tree = BPlusTree(record_len)
+        bTreeFile = open(i, 'r')
+        typeName = bTreeFile.readline().strip()
+        while True:
+            line = bTreeFile.readline()
+            lineWords = line.strip().split()
+            if not line or len(lineWords) < 2:
+                break
+            primaryKey = lineWords[0]
+            for el in attributeCatalogValues:
+                elements = el.split()
+                if elements[4] == "True" and elements[2] == "int" and elements[1] == typeName:
+                    primaryKey = int(primaryKey)
+            tree.insert(primaryKey, lineWords[1])
+        bPlusTrees[typeName] = tree
+
+storageFiles = []
+currentFileIndex = 0
+currentPageIndex = 0
+currentPageRecordIndex = 0
+currentEmptyRecordNumber = 0
+#TODO:
+prefix = 'storage_file_'
+for i in os.listdir('./'):
+    if os.path.isfile(os.path.join('./',i)) and prefix in i:
+        storageFiles.append(i)
+
+if not storageFiles:
+    newFileName = prefix + str(len(storageFiles)+1) + '.txt'
+    with open(newFileName, 'wb') as f:
+        storageFiles.append(newFileName)
+        f.write(b'10')
+    currentFileIndex = 1
+    currentPageIndex = 1
+    currentPageRecordIndex = 1
+    currentEmptyRecordNumber = 10
+
+else:
+    #TODO: Storage file'dakileri bplustree'ye ekle
+    lastFileName = prefix + str(len(storageFiles)) + '.txt'
+    num_lines = sum(1 for line in open(lastFileName))
+    currentFileIndex = len(storageFiles)
+    currentPageIndex = (num_lines // 11) + 1
+    currentPageRecordIndex = num_lines - (currentPageIndex-1)*11
+    currentEmptyRecordNumber = int(linecache.getline(lastFileName, (currentPageIndex-1)*11+1))
 
 def createType(params):
     typeName = params[0]
@@ -460,12 +508,14 @@ def createRecord(params):
     for el in attributeCatalogValues:
         elements = el.split()
         if elements[1] == typeName:
-            elTypeIndex = int(elements[3])-1
-            if elements[4] == 'True':
-                primaryKey = fieldValues[elTypeIndex]
             shouldContinue = checkInteger(elements[2], fieldValues[int(elements[3])-1])
             if not shouldContinue:
                 return
+            elTypeIndex = int(elements[3])-1
+            if elements[4] == 'True':
+                primaryKey = fieldValues[elTypeIndex]
+                if elements[2] == "int":
+                    primaryKey = int(primaryKey)
             foundType = True
     global isSuccess
     if not foundType:
@@ -488,7 +538,7 @@ def createRecord(params):
     bTreeFileName = findBTreeFileName(typeName)
     bTreeFile = open(bTreeFileName, "a")
     createdFiles.add(bTreeFileName)
-    bTreeFile.write("\n" + primaryKey + " " + pageIdSlot)
+    bTreeFile.write("\n" + str(primaryKey) + " " + pageIdSlot)
     currentStorageFileName = 'storage_file_'+ str(currentFileIndex) + '.txt' 
 
     with open(currentStorageFileName,"a") as currentStorageFile:
@@ -503,7 +553,6 @@ def createRecord(params):
     out = open(currentStorageFileName, "w")
     out.writelines(allLines)
     out.close()
-
 
     if(currentPageRecordIndex==10):
         currentPageRecordIndex=1
@@ -522,11 +571,7 @@ def createRecord(params):
                 currentStorageFile.write("\n10")
     else:
         currentEmptyRecordNumber=currentEmptyRecordNumber-1
-        currentPageRecordIndex=currentPageRecordIndex+1
-
-    #TODO: Write to a record/page file -- DONE
-    #TODO: Kaç boş olduğunu gösteren sayıyı azaltacağız -- DONE
-    
+        currentPageRecordIndex=currentPageRecordIndex+1    
 
 def deleteType(params):
     typeName = params[0]
@@ -545,20 +590,62 @@ def deleteType(params):
     #TODO: Remove all records with this type.
 
 
+a = BPlusTree(6)
+a.insert(1, '^3')
+a.insert(2, '^3')
+a.insert(3, '^3')
+a.insert(4, '^3')
+a.insert(5, '^3')
+a.insert(7, '^3')
+a.insert(0, '^3')
+a.insert(81, '^3')
+a.insert(9, '^3')
+a.insert(19, '^3')
+print('HERE')
+i = 0
+root = a.root
+while i < 20:
+    i += 1
+    print(root.values)
+    root = a.search(root.values[0])
+print('HERE')
 
 def deleteRecord(params):
     typeName = params[0]
     primaryKey = params[1]
-    tree = bPlusTrees.get(typeName)
+    foundType = False
+    for el in attributeCatalogValues:
+        elements = el.split()
+        if elements[1] == typeName:
+            if elements[4] == 'True' and elements[2] == "int":
+                primaryKey = int(primaryKey)
+            foundType = True
     global isSuccess
+    if not foundType:
+        isSuccess = False
+        return
+    tree = bPlusTrees.get(typeName)
+    # printTree(tree)
     if not tree:
         isSuccess = False
         return
-    itemFound = tree.search(primaryKey).values
-    if primaryKey in itemFound:
+    itemFound = tree.search(primaryKey)
+    if primaryKey not in itemFound.values:
         isSuccess = False
         return
-    tree.delete(typeName, primaryKey)
+    index = -1
+    try:
+        index = itemFound.values.index(primaryKey)
+    except:
+        isSuccess = False
+        return
+    print(itemFound.keys[index])
+    print(itemFound.keys)
+    print(itemFound.values)
+    
+    print(primaryKey)
+    print(tree.find(primaryKey, itemFound.keys[index]))
+    tree.delete(primaryKey, itemFound.keys[index])
     #TODO: Delete bitini değiştireceğiz
     #TODO: Tree dosyasından da sileceğiz
     #TODO: Page header'da silme bitini işaretleyeceğiz
@@ -572,7 +659,7 @@ def updateRecord(params):
     tree = bPlusTrees.get(typeName)
     itemFound = tree.search(primaryKey).values
     global isSuccess
-    if primaryKey in itemFound:
+    if primaryKey not in itemFound:
         isSuccess = False
         return
     #TODO: Sonrasında search ile page id-slot bulunacak, tree'den bulunan page-id slot ikilisi kullanılarak
@@ -588,7 +675,7 @@ def searchRecord(params):
         isSuccess = False
         return
     itemFound = tree.search(primaryKey).values
-    if primaryKey in itemFound:
+    if primaryKey not in itemFound:
         isSuccess = False
         return
     doesFileNotExist = fileNotExists(outputFileName)
@@ -668,49 +755,6 @@ def handleOperation(line):
     if not isSuccess:
         logInfo[2] = "failure"
     logFileEntries.append(logInfo)
-
-if fileNotExists(systemCatalogFileName):
-    cateRelString = "# Attr_Cat("
-    cateRelString += ', '.join(attributeCatalogTitles)
-    cateRelString += ")\n"
-    createdFiles.add(systemCatalogFileName)
-    systemCatalogFileWrite.write(cateRelString)
-    systemCatalogFileWrite.write(tableAlignedText(attributeCatalogTitles))
-    systemCatalogFileWrite.write("------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n")
-    for row in attributeCatalogSubRows:
-        systemCatalogFileWrite.write(tableAlignedText(row))
-
-    cateIndString = "# Index_Cat("
-    cateIndString += ', '.join(indexCatalogTitles)
-    cateIndString += ")\n"
-    createdFiles.add(indexCatalogFileName)
-    indexCatalogFileWrite.write(cateIndString)
-    indexCatalogFileWrite.write(tableAlignedText(indexCatalogTitles, 4))
-    indexCatalogFileWrite.write("------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n")
-    for row in indexCatalogSubRows:
-        indexCatalogFileWrite.write(tableAlignedText(row, 4))
-
-    logFile.writerow(logFileTitles)
-
-readRowNum = 0
-while True:
-    readRowNum += 1
-    line = systemCatalogFileRead.readline().strip()
-    if not line:
-      break
-    if readRowNum < 7:
-      continue
-    attributeCatalogValues.append(line.strip())
-
-readRowNum = 0
-while True:
-    readRowNum += 1
-    line = indexCatalogFileRead.readline().strip()
-    if not line:
-      break
-    if readRowNum < 3:
-      continue
-    indexCatalogValues.append(line.strip())
  
 while True:
     isSuccess = True
