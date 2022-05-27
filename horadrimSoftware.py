@@ -2,7 +2,11 @@ import csv
 import linecache
 import math
 import os
+import sys
 import time
+
+sys.setrecursionlimit(110000)
+
 
 bPlusTrees = {}
 record_len = 6
@@ -39,7 +43,6 @@ class Node:
         else:
             self.values = [value]
             self.keys = [key]
-
 
 # B plus tree
 class BPlusTree:
@@ -81,18 +84,13 @@ class BPlusTree:
                 elif (i + 1 == len(current_node.values)):
                     current_node = current_node.keys[i + 1]
                     break
-        return current_node
+        return current_node        
 
     # Find the node
     def find(self, value, key):
         l = self.search(value)
-        print('HERE')
-        print(value)
-        print(key)
         for i, item in enumerate(l.values):
-            print(item)
             if item == value:
-                print(l.keys[i])
                 if key in l.keys[i]:
                     return True
                 else:
@@ -159,6 +157,20 @@ class BPlusTree:
         if temp == 0:
             print("Value not in Tree")
             return
+
+    def findAllValues(self):
+        allValues = set()
+        waitingNodes = set()
+        waitingNodes.add(self.root)
+        while waitingNodes:
+            current_node = waitingNodes.pop()
+            if(current_node.check_leaf):
+                for value in current_node.values:
+                    allValues.add(value)
+            else:
+                for node in current_node.keys:
+                    waitingNodes.add(node)
+        return allValues
 
     # Delete an entry
     def deleteEntry(self, node_, value, key):
@@ -591,6 +603,11 @@ def deleteType(params):
         global isSuccess
         isSuccess = False
         return
+    tree = bPlusTrees.get(typeName)
+    if not tree:
+        isSuccess = False
+        return
+    allFoundValues = tree.findAllValues()
     bPlusTrees.pop(typeName)
     bTreeFileName = findBTreeFileName(typeName)
     os.remove(bTreeFileName)
@@ -635,7 +652,6 @@ def deleteRecord(params):
             break
         else:
             words = line.split()
-            print(words)
             if not(str(words[0]) == str(primaryKey)):
                 if not(allText == ''):
                     allText += '\n'

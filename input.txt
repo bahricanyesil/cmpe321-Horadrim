@@ -1,4 +1,12 @@
 create type potion 3 1 id int type str size str
 create record potion 11 stamina standard
 create record potion 6 mana minor
-delete record potion 6
+create record potion 19 mana minor
+create record potion 9 mana minor
+create record potion 8 mana minor
+create record potion 5 mana minor
+create record potion 4 mana minor
+create record potion 3 mana minor
+create record potion 2 mana minor
+create record potion 1 mana minor
+delete type potion

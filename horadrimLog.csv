@@ -1,5 +1,13 @@
 occurrence,operation,status
-1653652943,create type potion 3 1 id int type str size str,success
-1653652943,create record potion 11 stamina standard,success
-1653652943,create record potion 6 mana minor,success
-1653652943,delete record potion 6,success
+1653656989,create type potion 3 1 id int type str size str,success
+1653656989,create record potion 11 stamina standard,success
+1653656989,create record potion 6 mana minor,success
+1653656989,create record potion 19 mana minor,success
+1653656989,create record potion 9 mana minor,success
+1653656989,create record potion 8 mana minor,success
+1653656989,create record potion 5 mana minor,success
+1653656989,create record potion 4 mana minor,success
+1653656989,create record potion 3 mana minor,success
+1653656989,create record potion 2 mana minor,success
+1653656989,create record potion 1 mana minor,success
+1653656989,delete type potion,success
