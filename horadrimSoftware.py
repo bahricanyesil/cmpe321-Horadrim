@@ -318,7 +318,6 @@ for i in os.listdir('./'):
             if not line or len(lineWords) < 2:
                 break
             tree.insert(lineWords[0], lineWords[1])
-            print(lineWords)
         bPlusTrees[typeName] = tree
 
 storageFiles = []
@@ -482,6 +481,9 @@ def createRecord(params):
     global currentEmptyRecordNumber
     pageIdSlot = str(currentPageIndex) + '-' + str(currentPageRecordIndex)
     itemFound = tree.find(primaryKey, pageIdSlot)
+    printTree(tree)
+    print(primaryKey)
+    print(pageIdSlot)
     if itemFound:
         isSuccess = False
         return
