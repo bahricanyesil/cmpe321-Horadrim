@@ -5,6 +5,9 @@
                  rel_name             Attribute_Cat                    string                         2                     False
                      type             Attribute_Cat                    string                         3                     False
                  position             Attribute_Cat                   integer                         4                     False
+                     name                     angel                       str                         1                      True
+                    alias                     angel                       str                         2                     False
+              affiliation                     angel                       str                         3                     False
                        id                    potion                       int                         1                      True
                      type                    potion                       str                         2                     False
                      size                    potion                       str                         3                     False

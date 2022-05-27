@@ -575,8 +575,8 @@ def createRecord(params):
     if(currentPageRecordIndex==10):
         currentPageRecordIndex=1
         currentEmptyRecordNumber=10
-        if(currentPageIndex==10):
-            currentPageIndex=1
+        if(currentPageIndex%10==0):
+            currentPageIndex=currentPageIndex+1
             newFileName = prefix + str(len(storageFiles)+1) + '.txt'
             with open(newFileName, 'wb') as f:
                 storageFiles.append(newFileName)
@@ -641,6 +641,26 @@ def deleteRecord(params):
     except:
         isSuccess = False
         return
+    record = itemFound.keys[index]
+    dashIndex = record.find('-')
+    pageNo = int(record[0:dashIndex])
+    recordNo = int(record[dashIndex+1:])
+    fileNo = (pageNo // 10) + 1
+    pageNo = pageNo % 10
+    if(pageNo == 0):
+        pageNo = 10
+
+    foundFileName = "storage_file_"+str(fileNo)+".txt"
+    tempFile = open(foundFileName, "r")
+    allLines = tempFile.readlines()
+    emptyRecordsNum = int(allLines[((pageNo-1)*11)])
+    changeLine = allLines[((pageNo-1)*11)+recordNo]
+    allLines[((pageNo-1)*11)] = str(emptyRecordsNum+1)+"\n"
+    allLines[((pageNo-1)*11)+recordNo] = "1 " + changeLine[2:] + "\n"
+    out = open(foundFileName, "w")
+    out.writelines(allLines)
+    out.close()
+    
     tree.delete(primaryKey, itemFound.keys[index])
     bTreeFileName = findBTreeFileName(typeName)
     bTreeFile = open(bTreeFileName, "r+")
@@ -660,9 +680,6 @@ def deleteRecord(params):
     bTreeFileW = open(bTreeFileName, "w")
     bTreeFileW.write(allText)
     bPlusTrees[typeName] = tree
-    #TODO: Delete bitini değiştireceğiz
-    #TODO: Page header'da silme bitini işaretleyeceğiz
-    #TODO: Kaç boş olduğunu gösteren sayıyı artıracağız
 
 
 def updateRecord(params):
