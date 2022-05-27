@@ -449,7 +449,6 @@ currentFileIndex = 0
 currentPageIndex = 0
 currentPageRecordIndex = 0
 currentEmptyRecordNumber = 0
-#TODO:
 prefix = 'storage_file_'
 for i in os.listdir('./'):
     if os.path.isfile(os.path.join('./',i)) and prefix in i:
@@ -466,17 +465,19 @@ if not storageFiles:
     currentEmptyRecordNumber = 10
 
 else:
-    #TODO: Storage file'dakileri bplustree'ye ekle
     lastFileName = prefix + str(len(storageFiles)) + '.txt'
     num_lines = sum(1 for line in open(lastFileName))
     currentFileIndex = len(storageFiles)
     currentPageIndex = (num_lines // 11) + 1
     currentPageRecordIndex = num_lines - (currentPageIndex-1)*11
-    currentEmptyRecordNumber = int(linecache.getline(lastFileName, (currentPageIndex-1)*11+1))
+    currentEmptyRecordNumber = 11 - currentPageRecordIndex
 
 def createType(params):
-    typeName = params[0]
     global isSuccess
+    if len(params) < 3:
+        isSuccess = False
+        return
+    typeName = params[0]
     for el in attributeCatalogValues:
         elements = el.split()
         if elements[1] == typeName:
@@ -484,6 +485,9 @@ def createType(params):
             return
     numOfFields = int(params[1])
     primaryKeyOrder = int(params[2])
+    if len(params) < 3 + (numOfFields*2):
+        isSuccess = False
+        return
     fields = params[3:]
     fieldNames = []
     fieldTypes = []
@@ -518,6 +522,10 @@ def createType(params):
         newIndexCatalogValues.append(tableAlignedIndexRow)
 
 def createRecord(params):
+    global isSuccess
+    if len(params) < 1:
+        isSuccess = False
+        return
     typeName = params[0]
     fieldValues = params[1:]
     foundType = False
@@ -525,16 +533,19 @@ def createRecord(params):
     for el in attributeCatalogValues:
         elements = el.split()
         if elements[1] == typeName:
-            shouldContinue = checkInteger(elements[2], fieldValues[int(elements[3])-1])
+            elTypeIndex = int(elements[3])-1
+            if(elTypeIndex > len(params)-2):
+                isSuccess = False
+                print('HER')
+                return
+            shouldContinue = checkInteger(elements[2], fieldValues[elTypeIndex])
             if not shouldContinue:
                 return
-            elTypeIndex = int(elements[3])-1
             if elements[4] == 'True':
                 primaryKey = fieldValues[elTypeIndex]
                 if elements[2] == "int":
                     primaryKey = int(primaryKey)
             foundType = True
-    global isSuccess
     if not foundType:
         isSuccess = False
         return
@@ -593,6 +604,10 @@ def createRecord(params):
     bPlusTrees[typeName] = tree
 
 def deleteType(params):
+    global isSuccess
+    if len(params) < 1:
+        isSuccess = False
+        return
     typeName = params[0]
     foundType = False
     for el in attributeCatalogValues:
@@ -600,7 +615,6 @@ def deleteType(params):
         if elements[1] == typeName:
             foundType = True
     if not foundType:
-        global isSuccess
         isSuccess = False
         return
     tree = bPlusTrees.get(typeName)
@@ -608,12 +622,29 @@ def deleteType(params):
         isSuccess = False
         return
     allFoundValues = tree.findAllValues()
+    for value in allFoundValues:
+        itemFound = tree.search(value)
+        if primaryKey not in itemFound.values:
+            isSuccess = False
+            return
+        index = -1
+        try:
+            index = itemFound.values.index(primaryKey)
+        except:
+            isSuccess = False
+            return
+        record = itemFound.keys[index]
+        print(record)
+        
     bPlusTrees.pop(typeName)
     bTreeFileName = findBTreeFileName(typeName)
     os.remove(bTreeFileName)
-    #TODO: Remove all records with this type.
 
 def deleteRecord(params):
+    global isSuccess
+    if len(params) < 2:
+        isSuccess = False
+        return
     typeName = params[0]
     primaryKey = params[1]
     foundType = False
@@ -623,7 +654,6 @@ def deleteRecord(params):
             if elements[4] == 'True' and elements[2] == "int":
                 primaryKey = int(primaryKey)
             foundType = True
-    global isSuccess
     if not foundType:
         isSuccess = False
         return
@@ -655,8 +685,8 @@ def deleteRecord(params):
     allLines = tempFile.readlines()
     emptyRecordsNum = int(allLines[((pageNo-1)*11)])
     changeLine = allLines[((pageNo-1)*11)+recordNo]
-    allLines[((pageNo-1)*11)] = str(emptyRecordsNum+1)+"\n"
-    allLines[((pageNo-1)*11)+recordNo] = "1 " + changeLine[2:] + "\n"
+    allLines[((pageNo-1)*11)] = str(emptyRecordsNum+1) + "\n"
+    allLines[((pageNo-1)*11)+recordNo] = "1 " + changeLine[2:]
     out = open(foundFileName, "w")
     out.writelines(allLines)
     out.close()
@@ -683,12 +713,25 @@ def deleteRecord(params):
 
 
 def updateRecord(params):
+    global isSuccess
+    if len(params) < 2:
+        isSuccess = False
+        return
     typeName = params[0]
     primaryKey = params[1]
+    fieldNumTotal = 0
+    for el in attributeCatalogValues:
+        elements = el.split()
+        if elements[1] == typeName:
+            fieldNumTotal += 1
+            if elements[4] == "True" and elements[2] == "int":
+                primaryKey = int(primaryKey)
+    if len(params) < 2 + fieldNumTotal:
+        isSuccess = False
+        return
     fieldValues = params[1:]
     tree = bPlusTrees.get(typeName)
     itemFound = tree.search(primaryKey).values
-    global isSuccess
     if primaryKey not in itemFound:
         isSuccess = False
         return
@@ -697,43 +740,61 @@ def updateRecord(params):
 
 
 def searchRecord(params):
+    global isSuccess
+    if len(params) < 2:
+        isSuccess = False
+        return
     typeName = params[0]
     primaryKey = params[1]
+    for el in attributeCatalogValues:
+        elements = el.split()
+        if elements[4] == "True" and elements[2] == "int" and elements[1] == typeName:
+            primaryKey = int(primaryKey)
     tree = bPlusTrees.get(typeName)
-    global isSuccess
     if not tree:
         isSuccess = False
         return
-    itemFound = tree.search(primaryKey).values
-    if primaryKey not in itemFound:
-        isSuccess = False
-        return
     doesFileNotExist = fileNotExists(outputFileName)
-    itemSelf = tree.search(typeName).values
     if not doesFileNotExist:
         createdFiles.add(outputFileName)
         outputFile.write('\n')
         doesFileNotExist = False
-    if not itemSelf:
+    createdFiles.add(outputFileName)
+    itemFound = tree.search(primaryKey)
+    if primaryKey not in itemFound.values:
         isSuccess = False
         return
+    index = -1
+    try:
+        index = itemFound.values.index(primaryKey)
+    except:
+        isSuccess = False
+        return
+    record = itemFound.keys[index]
     #TODO: Itemself typename yazıyor şu anda, tree'den bulunan page-id slot ikilisi kullanılarak
     #TODO: ilgili file'dan veriler çekilecek ve tüm field'lar dosyaya yazılacak
-    createdFiles.add(outputFileName)
-    outputFile.write(itemSelf[0])
-    doesFileNotExist = False
-    return itemSelf[0]
+    # outputFile.write(itemSelf[0])
+    # doesFileNotExist = False
+    # return itemSelf[0]
 
 
 def filterRecord(params):
-  typeName = params[0]
-  condition = params[1]
-  #TODO: Search'tekilerin aynısı
+    global isSuccess
+    if len(params) < 2:
+        isSuccess = False
+        return
+    typeName = params[0]
+    condition = params[1]
+    #TODO: Search'tekilerin aynısı
 
 
 def listRecord(params):
-  typeName = params[0]
-  #TODO: Bütün search tree taranıp tek tek kontrol edilerek çekilecek
+    global isSuccess
+    if len(params) < 1:
+        isSuccess = False
+        return
+    typeName = params[0]
+    #TODO: Bütün search tree taranıp tek tek kontrol edilerek çekilecek
 
 
 def listType():
@@ -754,6 +815,10 @@ def listType():
 
 def handleOperation(line):
     words = line.split()
+    global isSuccess
+    if len(words) < 2:
+        isSuccess = False
+        return
     operationType = words[0]
     itemType = words[1]
     remainingParams = words[2:]

@@ -1,4 +1,6 @@
-8
-0 potion 4 healing greater 
-0 potion 11 stamina standard 
-1 potion 6 mana minor 
+6
+1 potion 11 stamina a 
+
+0 potion 6 healing greater 
+0 potion 8 stamina a 
+0 potion 0 stamina a 
